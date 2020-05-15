@@ -1,0 +1,71 @@
+<h2>BLACKJACK</h2>
+<div class="container-2 short">
+  <div class="one-2">
+    <label>Number Of Decks:
+     <input [(ngModel)]="numberOfDecks" placeholder=4/>
+    </label>
+    <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" (click)="initialiseDecks(numberOfDecks); shuffle(Decks)">Reset deck</button>
+   <span [ngStyle]="{'margin-left.px': 30}" >  Number of cards left: </span>{{Decks.length}}
+    <div>
+      <button mat-raised-button (click)="initGame()">Deal Cards</button>
+    </div>
+  </div>
+  <div class="two-2">
+    <label>Amount:
+      <input [(ngModel)]="money" placeholder=1000/>
+    </label>
+    <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" (click)="setMoney(money); shuffle(Decks)">Set Money</button>
+  </div>
+</div>
+
+<div class="container-2 long">
+  <div class="one-2">
+    <span>Dealer's hand</span>
+    <ul class="sideways">
+      <li class="sideways" *ngFor="let card of Dealer">
+        <img width="140px" height="180px" alt="card" src='{{card.img}}'>
+      </li>
+    </ul>
+  </div>
+  <div class="two-2">
+    <span>Your Hand</span>
+    <ul class="sideways">
+      <li class="sideways" *ngFor="let card of Hand">
+        <img width="140px" height="180px" alt="card" src='{{card.img}}'>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="container-4 short">
+  <div class="one-4">
+    <button mat-raised-button [disabled]="!(runningGame)" (click)="stand()">Stand</button>
+  </div>
+  <div class="two-4">
+    <button mat-raised-button [disabled]="!(runningGame)" (click)="hit()">Hit</button>
+  </div>
+  <div class="three-4">
+    <button mat-raised-button [disabled]="!(runningGame)">Double</button>
+  </div>
+  <div class="four-4">
+    <button mat-raised-button [disabled]="!(runningGame)">Split</button>
+  </div>
+</div>
+
+<div class="container-2 short">
+  <div class="one-2">
+    <span>PlayerMoney: </span> {{PlayerMoney}}
+  </div>
+  <div class="two-2">
+    <span>PlayerBet: </span> {{PlayerBet}}
+    <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" (click)="addBet(50); shuffle(Decks)">+50</button>
+    <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" (click)="minusBet(50); shuffle(Decks)">-50</button>
+    <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" (click)="resetBet(); shuffle(Decks)">50</button>
+  </div>
+</div>
+
+<div *ngIf="message">
+  <span>{{message}}</span>
+</div>
+
+
