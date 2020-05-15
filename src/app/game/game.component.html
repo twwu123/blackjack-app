@@ -58,9 +58,9 @@
   </div>
   <div class="two-2">
     <span>PlayerBet: </span> {{PlayerBet}}
-    <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" (click)="addBet(50); shuffle(Decks)">+50</button>
-    <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" (click)="minusBet(50); shuffle(Decks)">-50</button>
-    <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" (click)="resetBet(); shuffle(Decks)">50</button>
+    <button mat-raised-button [disabled]="(runningGame)" [ngStyle]="{'margin-left.px': 30}" (click)="addBet(50); shuffle(Decks)">+50</button>
+    <button mat-raised-button [disabled]="(runningGame)" [ngStyle]="{'margin-left.px': 30}" (click)="minusBet(50); shuffle(Decks)">-50</button>
+    <button mat-raised-button [disabled]="(runningGame)" [ngStyle]="{'margin-left.px': 30}" (click)="resetBet(); shuffle(Decks)">50</button>
   </div>
 </div>
 
