@@ -7,7 +7,7 @@
     <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" (click)="initialiseDecks(numberOfDecks); shuffle(Decks)">Reset deck</button>
    <span [ngStyle]="{'margin-left.px': 30}" >  Number of cards left: </span>{{Decks.length}}
     <div>
-      <button mat-raised-button (click)="initGame()">Deal Cards</button>
+      <button mat-raised-button (click)="dealCards()">Deal Cards</button>
     </div>
   </div>
   <div class="two-2">
@@ -30,7 +30,7 @@
   <div class="two-2">
     <span>Your Hand</span>
     <ul class="sideways">
-      <li class="sideways" *ngFor="let card of Hand">
+      <li class="sideways" *ngFor="let card of PlayerHand">
         <img width="140px" height="180px" alt="card" src='{{card.img}}'>
       </li>
     </ul>
@@ -45,10 +45,10 @@
     <button mat-raised-button [disabled]="!(runningGame)" (click)="hit()">Hit</button>
   </div>
   <div class="three-4">
-    <button mat-raised-button [disabled]="!(runningGame)">Double</button>
+    <button mat-raised-button [disabled]="!(runningGame)" (click)="double()">Double</button>
   </div>
   <div class="four-4">
-    <button mat-raised-button [disabled]="!(runningGame)">Split</button>
+    <button mat-raised-button [disabled]="!(runningGame)" (click)="split()">Split</button>
   </div>
 </div>
 

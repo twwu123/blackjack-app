@@ -11,12 +11,13 @@ export class GameComponent implements OnInit {
   Decks: Card[];
   numberOfDecks = 4;
   Dealer: Card[];
-  Hand: Card[];
+  PlayerHand: Card[];
   message: string;
   runningGame = false;
   money = 1000;
   PlayerMoney = 1000;
   PlayerBet = 50;
+  CardBack:Card ={value: 0, suit: 'NA', face: 'NA', img: 'assets/imgs/cards/cardback.png'};
   initialiseDecks(numberOfDecks: number): void {
     this.Decks = [];
     for (let i = 0; i < numberOfDecks; i++) {
@@ -31,19 +32,16 @@ export class GameComponent implements OnInit {
       Decks[j] = temp;
     }
   }
-  initGame(): void {
+  dealCards(): void {
     if (!this.runningGame) {
       this.message = '';
       if (this.Decks.length > 3) {
         this.Dealer = [];
-        this.Hand = [];
+        this.PlayerHand = [];
         this.runningGame = true;
-        const card1: Card = this.Decks.pop();
-        const card2: Card = this.Decks.pop();
-        const card3: Card = this.Decks.pop();
-        this.Dealer.push(card1);
-        this.Hand.push(card2);
-        this.Hand.push(card3);
+        this.DealCard(this.Dealer);
+        this.Dealer.push(this.CardBack);
+        this.DealCard(this.PlayerHand,2);
       } else {
         this.message = 'Deck has to few cards left to play, please reset the deck';
       }
@@ -51,27 +49,32 @@ export class GameComponent implements OnInit {
       this.message = 'Game already in play';
     }
   }
+  DealCard(hand: Card[], amount:Number = 1): void{
+    for (let x = 0; x<amount; x++){
+      const card: Card = this.Decks.pop();
+      hand.push(card);
+    }
+  }
   stand(): void {
     this.runningGame = false;
     let dealerScore = this.calcScore(this.Dealer);
+    this.Dealer.pop(); // popping off card back
     while (dealerScore < 17) {
-      const card = this.Decks.pop();
-      this.Dealer.push(card);
+      this.DealCard(this.Dealer);
       dealerScore = this.calcScore(this.Dealer);
     }
-    this.PlayerMoney = this.PlayerMoney + this.calculateWinnings(this.Hand, this.Dealer);
+    this.PlayerMoney = this.PlayerMoney + this.calculateWinnings(this.PlayerHand, this.Dealer);
   }
   hit(): void {
-    if (this.Decks.length > 0 && this.Hand.length > 0) {
-      const card: Card = this.Decks.pop();
-      this.Hand.push(card);
-      const playerScore = this.calcScore(this.Hand);
+    if (this.Decks.length > 0 && this.PlayerHand.length > 0) {
+      this.DealCard(this.PlayerHand);
+      const playerScore = this.calcScore(this.PlayerHand);
       if (playerScore > 21) {
         this.runningGame = false;
         this.PlayerMoney = this.PlayerMoney - this.PlayerBet;
       }
     } else {
-      if (this.Hand.length === 0) {
+      if (this.PlayerHand.length === 0) {
         this.message = 'Please Start the game first';
       } else {
         this.message = 'Deck has to few cards left to play, please reset the deck';
@@ -79,7 +82,25 @@ export class GameComponent implements OnInit {
     }
   }
   double(): void {
-    console.log('double');
+    
+    if (this.Decks.length > 0 && this.PlayerHand.length > 0) {
+      this.DealCard(this.PlayerHand);
+      this.addBet(this.PlayerBet);
+      const playerScore = this.calcScore(this.PlayerHand);
+      if (playerScore > 21) {
+        this.runningGame = false;
+        this.PlayerMoney = this.PlayerMoney - this.PlayerBet;
+      }else{
+        this.stand();
+      }
+      
+    } else {
+      if (this.PlayerHand.length === 0) {
+        this.message = 'Please Start the game first';
+      } else {
+        this.message = 'Deck has to few cards left to play, please reset the deck';
+      }
+    }
   }
   split(): void {
     console.log('split');
@@ -153,5 +174,7 @@ export class GameComponent implements OnInit {
     this.initialiseDecks(this.numberOfDecks);
     this.shuffle(this.Decks);
   }
+
+
 
 }
