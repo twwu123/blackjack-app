@@ -17,7 +17,7 @@ export class GameComponent implements OnInit {
   money = 1000;
   PlayerMoney = 1000;
   PlayerBet = 50;
-  CardBack:Card ={value: 0, suit: 'NA', face: 'NA', img: 'assets/imgs/cards/cardback.png'};
+  CardBack: Card = {value: 0, suit: 'NA', face: 'NA', img: 'assets/imgs/cards/cardback.png'};
   initialiseDecks(numberOfDecks: number): void {
     this.Decks = [];
     for (let i = 0; i < numberOfDecks; i++) {
@@ -41,7 +41,10 @@ export class GameComponent implements OnInit {
         this.runningGame = true;
         this.DealCard(this.Dealer);
         this.Dealer.push(this.CardBack);
-        this.DealCard(this.PlayerHand,2);
+        this.DealCard(this.PlayerHand, 2);
+        if (this.calcScore(this.PlayerHand) === 21) {
+          this.stand();
+        }
       } else {
         this.message = 'Deck has to few cards left to play, please reset the deck';
       }
@@ -49,8 +52,8 @@ export class GameComponent implements OnInit {
       this.message = 'Game already in play';
     }
   }
-  DealCard(hand: Card[], amount:Number = 1): void{
-    for (let x = 0; x<amount; x++){
+  DealCard(hand: Card[], amount: number = 1): void{
+    for (let x = 0; x < amount; x++){
       const card: Card = this.Decks.pop();
       hand.push(card);
     }
@@ -82,7 +85,6 @@ export class GameComponent implements OnInit {
     }
   }
   double(): void {
-    
     if (this.Decks.length > 0 && this.PlayerHand.length > 0) {
       this.DealCard(this.PlayerHand);
       this.addBet(this.PlayerBet);
@@ -90,10 +92,11 @@ export class GameComponent implements OnInit {
       if (playerScore > 21) {
         this.runningGame = false;
         this.PlayerMoney = this.PlayerMoney - this.PlayerBet;
+        this.PlayerBet = Math.floor(this.PlayerBet / 2);
       }else{
         this.stand();
+        this.PlayerBet = Math.floor(this.PlayerBet / 2);
       }
-      
     } else {
       if (this.PlayerHand.length === 0) {
         this.message = 'Please Start the game first';
