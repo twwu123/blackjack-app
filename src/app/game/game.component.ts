@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DECK } from '../../deck';
 import { Card } from '../../card';
+import {BasicStrategyService} from 'src/app/services/basic-strategy.service';
 
 @Component({
   selector: 'app-game',
@@ -18,6 +19,9 @@ export class GameComponent implements OnInit {
   PlayerMoney = 1000;
   PlayerBet = 50;
   CardBack: Card = {value: 0, suit: 'NA', face: 'NA', img: 'assets/imgs/cards/cardback.png'};
+  
+  constructor(private basicStrategyService: BasicStrategyService) { }
+ 
   initialiseDecks(numberOfDecks: number): void {
     this.Decks = [];
     for (let i = 0; i < numberOfDecks; i++) {
@@ -45,6 +49,7 @@ export class GameComponent implements OnInit {
         if (this.calcScore(this.PlayerHand) === 21) {
           this.stand();
         }
+        console.log(this.basicStrategyService.DecideBSAction(this.Dealer, this.PlayerHand));
       } else {
         this.message = 'Deck has to few cards left to play, please reset the deck';
       }
@@ -76,6 +81,7 @@ export class GameComponent implements OnInit {
         this.runningGame = false;
         this.PlayerMoney = this.PlayerMoney - this.PlayerBet;
       }
+      console.log(this.basicStrategyService.DecideBSAction(this.Dealer, this.PlayerHand));
     } else {
       if (this.PlayerHand.length === 0) {
         this.message = 'Please Start the game first';
@@ -170,8 +176,6 @@ export class GameComponent implements OnInit {
   resetBet(): void {
     this.PlayerBet = 50;
   }
-
-  constructor() { }
 
   ngOnInit(): void {
     this.initialiseDecks(this.numberOfDecks);
