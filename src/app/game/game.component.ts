@@ -155,7 +155,7 @@ export class GameComponent implements OnInit {
         }
       }
     }
-  } //
+  }
   setMoney(amount: number): void {
     this.PlayerMoney = amount;
   }
