@@ -53,4 +53,5 @@ export const DECK: Card[] = [
   {value: 10, suit: 'Clubs', face: 'J', img: 'assets/imgs/cards/JC.png'},
   {value: 10, suit: 'Clubs', face: 'Q', img: 'assets/imgs/cards/QC.png'},
   {value: 10, suit: 'Clubs', face: 'K', img: 'assets/imgs/cards/KC.png'},
+
 ];

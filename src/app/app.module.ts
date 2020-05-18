@@ -10,11 +10,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BotsComponent } from './bots/bots.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    GameComponent
+    GameComponent,
+    BotsComponent
   ],
   imports: [
     BrowserModule,
