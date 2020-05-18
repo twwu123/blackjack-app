@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DECK } from '../../deck';
 import { Card } from '../../card';
 import { Hand } from '../../hand';
+import {BasicStrategyService} from 'src/app/services/basic-strategy.service';
 
 @Component({
   selector: 'app-game',
@@ -21,6 +22,7 @@ export class GameComponent implements OnInit {
   PlayerMoney = 1000;
   PlayerBet = 50;
   CardBack: Card = {value: 0, suit: 'NA', face: 'NA', img: 'assets/imgs/cards/cardback.png'};
+  constructor(private basicStrategyService: BasicStrategyService) { }
   initialiseDecks(numberOfDecks: number): void {
     this.Decks = [];
     for (let i = 0; i < numberOfDecks; i++) {
@@ -49,6 +51,7 @@ export class GameComponent implements OnInit {
         if (this.PlayerHand.score() === 21) {
           this.stand(this.PlayerHand);
         }
+        console.log(this.basicStrategyService.DecideBSAction(this.DealerHand.cards, this.PlayerHand.cards));
       } else {
         this.message = 'Deck has to few cards left to play, please reset the deck';
       }
@@ -64,7 +67,6 @@ export class GameComponent implements OnInit {
   }
   stand(playingHand: Hand): void {
     if (this.PlayerSecondHand.cards.length === 0) {
-      this.message = 'test1';
       this.runningGame = false;
       while (this.DealerHand.score() < 17) {
         this.DealCard(this.DealerHand);
@@ -72,10 +74,8 @@ export class GameComponent implements OnInit {
       this.PlayerMoney = this.PlayerMoney + this.calculateWinnings(playingHand, this.DealerHand);
     } else {
       if (this.currentHand === this.PlayerHand) {
-        this.message = 'test2';
         this.currentHand = this.PlayerSecondHand;
       } else {
-        this.message = 'test3';
         this.runningGame = false;
         while (this.DealerHand.score() < 17) {
           this.DealCard(this.DealerHand);
@@ -101,6 +101,7 @@ export class GameComponent implements OnInit {
           }
         }
       }
+      console.log(this.basicStrategyService.DecideBSAction(this.DealerHand.cards, this.PlayerHand.cards));
     } else {
       if (playingHand.cards.length === 0) {
         this.message = 'Please Start the game first';
@@ -182,9 +183,6 @@ export class GameComponent implements OnInit {
       return false;
     }
   }
-
-  constructor() { }
-
   ngOnInit(): void {
     this.initialiseDecks(this.numberOfDecks);
     this.shuffle(this.Decks);
