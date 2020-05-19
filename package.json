@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng build --base-href=/blackjack-app/"
+    "deploy": "ng deploy --base-href=/blackjack-app/"
   },
   "private": true,
   "dependencies": {

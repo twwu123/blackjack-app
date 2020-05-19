@@ -10,7 +10,7 @@
         <span [ngStyle]="{'margin-left.px': 30}" >  Number of cards left: </span>{{Decks.length}}
       </div>
       <div>
-        <span>Dealer's hand</span>
+        Dealer's hand<span *ngIf="!runningGame"> ---- Dealer Score: {{this.DealerHand.score()}}</span>
         <div style="height: 180px" class="bg-success show">
         <ul class="sideways">
           <li class="sideways" *ngFor="let card of DealerHand.cards, let i = index">
@@ -23,7 +23,7 @@
         </div>
       </div>
       <div>
-        <span>Your Hand</span> Hand Bet: {{this.User.PlayerBets[0]}}
+        <span>Your Hand</span> ---- Hand Bet: {{this.User.PlayerBets[0]}} ---- Score: {{this.User.PlayerHands[0].score()}}
         <div style="height: 180px" class="bg-success show">
           <div [ngClass]="{'current': currentPlayerIndex === 0 && PlayersInPlay[currentPlayerIndex].currentHandIndex === 0}">
            <ul class="sideways">
@@ -35,7 +35,7 @@
         </div>
       </div>
       <div style="padding-top: 10px" *ngIf="this.User.PlayerHands[1]">
-        <span>Second Hand</span> Hand Bet: {{this.User.PlayerBets[1]}}
+        <span>Second Hand</span> Hand Bet: {{this.User.PlayerBets[1]}}  Points: {{this.User.PlayerHands[1].score()}}
         <div class="bg-success">
           <div [ngClass]="{'current': currentPlayerIndex === 0 && PlayersInPlay[currentPlayerIndex].currentHandIndex === 1}">
             <ul class="sideways">
@@ -60,7 +60,8 @@
                 <button mat-raised-button [disabled]="!(runningGame)" (click)="hit(this.User)">Hit</button>
               </div>
               <div class="col-sm">
-                <button mat-raised-button [disabled]="!(runningGame)" (click)="double(this.User)">Double</button>
+                <button mat-raised-button [disabled]="!(runningGame) || (this.User.PlayerHands[0].cards.length != 2) ||
+                  (this.User.PlayerHands.length != 1)" (click)="double(this.User)">Double</button>
               </div>
               <div class="col-sm">
                 <button mat-raised-button [disabled]="(!(runningGame) || (this.User.PlayerHands.length === 2)) ||
