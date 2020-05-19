@@ -1,16 +1,15 @@
-export class BasicStrategyData{
-    /*
-        H = Hit
-        S = Stand
-        D = Double if allowed, otherwise hit
-        Ds = double if allowed, otherwise stand
-        Y = Split
-        N = Do not split
-        Sur = Surrender
+export class BasicStrategyData {
+    Action = {
+        H: 'Hit',
+        S: 'Stand',
+        D: 'Double if allowed, otherwise Hit',
+        Ds: 'Double if allowed, otherwise Stand',
+        Y: 'Split',
+        N: 'Do not split',
+    };
 
-    */
     private HardTotalData: string[][] = [
-    // Dealer hand  A,2,3,4,5,6,7,8,9,10 : player hand total
+        // Dealer hand  A,2,3,4,5,6,7,8,9,10 : player hand total
         ['H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H'], // 2
         ['H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H'], // 3
         ['H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H'], // 3
@@ -30,23 +29,32 @@ export class BasicStrategyData{
         ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 17
         ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 18
         ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 19
-        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 20
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'] // 20
+    ];
 
-   ];
+    private SoftTotalData: string[][] = [
+        ['H', 'H', 'H', 'H', 'D', 'D', 'H', 'H', 'H', 'H'], // 2
+        ['H', 'H', 'H', 'H', 'D', 'D', 'H', 'H', 'H', 'H'], // 3
+        ['H', 'H', 'H', 'D', 'D', 'D', 'H', 'H', 'H', 'H'], // 4
+        ['H', 'H', 'H', 'D', 'D', 'D', 'H', 'H', 'H', 'H'], // 5
+        ['H', 'H', 'D', 'D', 'D', 'D', 'H', 'H', 'H', 'H'], // 6
+        ['H', 'Ds', 'Ds', 'Ds', 'Ds', 'Ds', 'S', 'S', 'H', 'H'], // 7
+        ['S', 'S', 'S', 'S', 'S', 'Ds', 'S', 'S', 'S', 'S'], // 8
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 9
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 10
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 12
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 12
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 13
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 14
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 15
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 16
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 17
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 18
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 19
+        ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'] // 20
+    ];
 
-   private SoftTotalData: string[][] = [
-       ['H', 'H', 'H', 'H', 'D', 'D', 'H', 'H', 'H', 'H'], // 2
-       ['H', 'H', 'H', 'H', 'D', 'D', 'H', 'H', 'H', 'H'], // 3
-       ['H', 'H', 'H', 'D', 'D', 'D', 'H', 'H', 'H', 'H'], // 4
-       ['H', 'H', 'H', 'D', 'D', 'D', 'H', 'H', 'H', 'H'], // 5
-       ['H', 'H', 'D', 'D', 'D', 'D', 'H', 'H', 'H', 'H'], // 6
-       ['H', 'Ds', 'Ds', 'Ds', 'Ds', 'Ds', 'S', 'S', 'H', 'H'], // 7
-       ['S', 'S', 'S', 'S', 'S', 'Ds', 'S', 'S', 'S', 'S'], // 8
-       ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 9
-       ['S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S', 'S'], // 10
-   ];
-
-   private PairSplitData: string[][] = [
+    private PairSplitData: string[][] = [
         ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'], // A
         ['N', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N'], // 2
         ['N', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N'], // 3
@@ -56,16 +64,25 @@ export class BasicStrategyData{
         ['N', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N'], // 7
         ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'], // 8
         ['N', 'Y', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'N'], // 9
-        ['N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N'], // 10
-   ];
+        ['N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N'] // 10
+    ];
 
-    public getHardTotalData(): string[][]{
-        return this.HardTotalData;
+    public getHardTotalData(
+        playerHandIndex: number,
+        dealerHandIndex: number
+    ): string {
+        return this.Action[this.HardTotalData[playerHandIndex][dealerHandIndex]];
     }
-    public getSoftTotalData(): string[][]{
-        return this.SoftTotalData;
+    public getSoftTotalData(
+        playerHandIndex: number,
+        dealerHandIndex: number
+    ): string {
+        return this.Action[this.SoftTotalData[playerHandIndex][dealerHandIndex]];
     }
-    public getPairSplitData(): string[][]{
-        return this.PairSplitData;
+    public getPairSplitData(
+        playerHandIndex: number,
+        dealerHandIndex: number
+    ): string {
+        return this.Action[this.PairSplitData[playerHandIndex][dealerHandIndex]];
     }
 }

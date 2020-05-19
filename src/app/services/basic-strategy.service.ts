@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {BasicStrategyData} from 'src/app/models/BasicStrategyData';
+import { BasicStrategyData } from 'src/app/models/BasicStrategyData';
 import { Card } from '../../card';
 
 @Injectable({
@@ -12,39 +12,40 @@ export class BasicStrategyService {
   DecideBSAction(DealerDeck: Card[], PlayerDeck: Card[]): string {
     let containsAce = false;
     const playerAction = '';
-    console.log(this.basicStrategyData.getHardTotalData());
-    if (PlayerDeck.length === 2 ){  // check if player hand is a duplicate, in which case check if we should split
-      const x = new Set(PlayerDeck);
-      if (x.keys.length === 1){
-        return this.SplitDecision(DealerDeck, x[0]);
+    let dealerUpCard: Card = DealerDeck[0];
+    if (PlayerDeck.length === 2) {  // check if player hand is a duplicate, in which case check if we should split
+      if (PlayerDeck[0].value === PlayerDeck[1].value) {
+        return this.SplitDecision(dealerUpCard, PlayerDeck[0].value);
       }
     }
-    const PlayerDeckWithoutAces: Card[] = [];
+    const PlayerDeckWithoutFirstAce: Card[] = [];
     PlayerDeck.forEach(element => {
       if (element.value === 1) {
-         containsAce = true;
-      }else{
-        PlayerDeckWithoutAces.push(element);
+        if (containsAce) {
+          PlayerDeckWithoutFirstAce.push(element);
+        }
+        containsAce = true;
+      } else {
+        PlayerDeckWithoutFirstAce.push(element);
       }
     });
-    if (containsAce){
-      return this.SoftTotalAction(DealerDeck, PlayerDeckWithoutAces);
-    }else{
-      return this.HardTotalAction(DealerDeck, PlayerDeck);
+    if (containsAce) {
+      return this.SoftTotalAction(dealerUpCard, PlayerDeckWithoutFirstAce);
+    } else {
+      return this.HardTotalAction(dealerUpCard, PlayerDeck);
     }
   }
 
-  HardTotalAction(DealerDeck: Card[], PlayerDeck: Card[]): string{
-    return this.basicStrategyData.getHardTotalData()[this.calculateHandvalue(PlayerDeck) - 1][this.calculateHandvalue(DealerDeck) - 1];
+  HardTotalAction(DealerCard: Card, PlayerDeck: Card[]): string {
+    return this.basicStrategyData.getHardTotalData(this.calculateHandvalue(PlayerDeck) - 1, DealerCard.value - 1);
   }
 
-  SoftTotalAction(DealerDeck: Card[], PlayerDeck: Card[]): string{
-    return this.basicStrategyData.getSoftTotalData()[this.calculateHandvalue(PlayerDeck) - 1][this.calculateHandvalue(DealerDeck) - 1];
+  SoftTotalAction(DealerCard: Card, PlayerDeck: Card[]): string {
+    return this.basicStrategyData.getSoftTotalData(this.calculateHandvalue(PlayerDeck) - 1, DealerCard.value - 1);
   }
 
-  SplitDecision(DealerDeck: Card[], playerCardValue: number): string{
-    return this.basicStrategyData.getPairSplitData()[playerCardValue - 1][this.calculateHandvalue(DealerDeck) - 1];
-
+  SplitDecision(DealerCard: Card, playerCardValue: number): string {
+    return this.basicStrategyData.getPairSplitData(playerCardValue - 1, DealerCard.value - 1);
   }
 
   calculateHandvalue(hand: Card[]): number {
