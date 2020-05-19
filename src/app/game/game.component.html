@@ -11,9 +11,7 @@
       </div>
       <div>
         <span>Dealer's hand</span>
-        <div class="bg-success">
-          <div style="height: 180px" *ngIf="!DealerHand.cards">
-          </div>
+        <div style="height: 180px" class="bg-success show">
         <ul class="sideways">
           <li class="sideways" *ngFor="let card of DealerHand.cards, let i = index">
             <img *ngIf="runningGame && i === 1 && DealerHand.cards.length === 2; else elseBlock" width="140px" height="180px" alt="card" [src]="CardBack.img">
@@ -25,25 +23,23 @@
         </div>
       </div>
       <div>
-        <span>Your Hand</span>
-        <div class="bg-success">
-          <div style="height: 180px" *ngIf="!PlayerHand.cards">
-          </div>
-          <div>
+        <span>Your Hand</span> Hand Bet: {{this.User.PlayerBets[0]}}
+        <div style="height: 180px" class="bg-success show">
+          <div [ngClass]="{'current': currentPlayerIndex === 0 && PlayersInPlay[currentPlayerIndex].currentHandIndex === 0}">
            <ul class="sideways">
-            <li class="sideways" *ngFor="let card of PlayerHand.cards">
+            <li class="sideways" *ngFor="let card of this.User.PlayerHands[0].cards">
              <img width="140px" height="180px" alt="card" src='{{card.img}}'>
             </li>
            </ul>
           </div>
         </div>
       </div>
-      <div>
-        <span>Second Hand</span>
+      <div style="padding-top: 10px" *ngIf="this.User.PlayerHands[1]">
+        <span>Second Hand</span> Hand Bet: {{this.User.PlayerBets[1]}}
         <div class="bg-success">
-          <div>
+          <div [ngClass]="{'current': currentPlayerIndex === 0 && PlayersInPlay[currentPlayerIndex].currentHandIndex === 1}">
             <ul class="sideways">
-              <li class="sideways" *ngFor="let card of PlayerSecondHand.cards">
+              <li class="sideways" *ngFor="let card of this.User.PlayerHands[1].cards">
                 <img width="140px" height="180px" alt="card" src='{{card.img}}'>
               </li>
             </ul>
@@ -58,16 +54,17 @@
                 <button mat-raised-button (click)="dealCards()">Deal Cards</button>
               </div>
               <div class="col-sm">
-                <button mat-raised-button [disabled]="!(runningGame)" (click)="stand(currentHand)">Stand</button>
+                <button mat-raised-button [disabled]="!(runningGame)" (click)="stand(this.User)">Stand</button>
               </div>
               <div class="col-sm">
-                <button mat-raised-button [disabled]="!(runningGame)" (click)="hit(currentHand)">Hit</button>
+                <button mat-raised-button [disabled]="!(runningGame)" (click)="hit(this.User)">Hit</button>
               </div>
               <div class="col-sm">
-                <button mat-raised-button [disabled]="!(runningGame)" (click)="double(currentHand)">Double</button>
+                <button mat-raised-button [disabled]="!(runningGame)" (click)="double(this.User)">Double</button>
               </div>
               <div class="col-sm">
-                <button mat-raised-button [disabled]="(!(runningGame) || (PlayerSecondHand.cards.length != 0)) || !checkDuplicates(PlayerHand)" (click)="split()">Split</button>
+                <button mat-raised-button [disabled]="(!(runningGame) || (this.User.PlayerHands.length === 2)) ||
+                !checkDuplicates(this.User.PlayerHands[0])" (click)="split(this.User)">Split</button>
               </div>
             </div>
           </div>
@@ -76,7 +73,7 @@
       <div style="padding-top: 50px">
         <div class="row">
           <div class="col-sm">
-            <span>PlayerBet: </span> {{PlayerBet}}
+            <span>PlayerBet: </span> {{this.User.PlayerOriginalBet}}
           </div>
          <div class="col-sm">
            <button mat-raised-button [disabled]="(runningGame)" (click)="addBet(50)">+50</button>
@@ -92,7 +89,7 @@
       <div style="padding-top: 50px">
         <div class="row">
           <div class="col-sm">
-            <span>PlayerMoney: </span> {{PlayerMoney}}
+            <span>PlayerMoney: </span> {{this.User.PlayerMoney}}
           </div>
           <div class="col-sm">
           <label>Amount:

@@ -1,7 +1,7 @@
 import { Card } from './card';
 
 export class Hand {
-  cards: Card[];
+  cards: Card[] = [];
 
   addCard(card: Card) {
     this.cards.push(card);
@@ -28,6 +28,7 @@ export class Hand {
         score = score + 11;
       }
     }
+    console.log(score);
     return score;
   }
 }

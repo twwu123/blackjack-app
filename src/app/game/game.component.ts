@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DECK } from '../../deck';
 import { Card } from '../../card';
 import { Hand } from '../../hand';
+import { Player } from '../../player';
 import {BasicStrategyService} from 'src/app/services/basic-strategy.service';
 
 @Component({
@@ -13,14 +14,13 @@ export class GameComponent implements OnInit {
   Decks: Card[];
   numberOfDecks = 4;
   DealerHand: Hand = new Hand();
-  PlayerHand: Hand = new Hand();
-  PlayerSecondHand: Hand = new Hand();
-  currentHand: Hand = this.PlayerHand;
+  money = 1000;
+  bet = 50;
+  User: Player = new Player(this.money, this.bet, [new Hand()]);
+  PlayersInPlay: Player[] = [this.User];
+  currentPlayerIndex = 0;
   message: string;
   runningGame = false;
-  money = 1000;
-  PlayerMoney = 1000;
-  PlayerBet = 50;
   CardBack: Card = {value: 0, suit: 'NA', face: 'NA', img: 'assets/imgs/cards/cardback.png'};
   constructor(private basicStrategyService: BasicStrategyService) { }
   initialiseDecks(numberOfDecks: number): void {
@@ -38,25 +38,29 @@ export class GameComponent implements OnInit {
     }
   }
   dealCards(): void {
-    if (!this.runningGame) {
-      this.message = '';
-      if (this.Decks.length > 3) {
-        this.DealerHand.cards = [];
-        this.PlayerHand.cards = [];
-        this.PlayerSecondHand.cards = [];
-        this.currentHand = this.PlayerHand;
+    if (this.Decks.length > 20) {
+      if (!this.runningGame) {
+        this.message = '';
         this.runningGame = true;
+        this.currentPlayerIndex = 0;
+        this.DealerHand.cards = [];
         this.DealCard(this.DealerHand, 2);
-        this.DealCard(this.PlayerHand, 2);
-        if (this.PlayerHand.score() === 21) {
-          this.stand(this.PlayerHand);
+        for (const player of this.PlayersInPlay) {
+          player.currentHandIndex = 0;
+          player.PlayerHands = [new Hand()];
+          player.PlayerBets = [player.PlayerOriginalBet];
+          this.DealCard(player.PlayerHands[0], 2);
+          if (player.PlayerHands[0].score() === 21) {
+            this.stand(player);
+          }
         }
-        console.log(this.basicStrategyService.DecideBSAction(this.DealerHand.cards, this.PlayerHand.cards));
+        console.log(this.basicStrategyService.DecideBSAction(this.DealerHand.cards,
+          this.User.PlayerHands[this.User.currentHandIndex].cards));
       } else {
-        this.message = 'Deck has to few cards left to play, please reset the deck';
+        this.message = 'Game already in play';
       }
     } else {
-      this.message = 'Game already in play';
+      this.message = 'Deck has to few cards left to play, please reset the deck';
     }
   }
   DealCard(hand: Hand, amount: number = 1): void{
@@ -65,116 +69,121 @@ export class GameComponent implements OnInit {
       hand.addCard(card);
     }
   }
-  stand(playingHand: Hand): void {
-    if (this.PlayerSecondHand.cards.length === 0) {
-      this.runningGame = false;
+  stand(player: Player): void {
+    if (player.currentHandIndex === player.PlayerHands.length - 1) {
+      this.currentPlayerIndex++;
+      if (this.currentPlayerIndex >= this.PlayersInPlay.length) {
+        this.endGame(this.DealerHand, this.PlayersInPlay);
+      }
+    } else {
+        player.currentHandIndex++;
+      }
+    }
+  hit(player: Player, standAfterHit = false): void {
+    const handInPlay = player.PlayerHands[player.currentHandIndex];
+    if (this.Decks.length > 0) {
+      this.DealCard(handInPlay);
+      if (handInPlay.score() > 21) {
+        if (this.User.currentHandIndex === this.User.PlayerHands.length - 1) {
+          this.currentPlayerIndex++;
+          if (this.currentPlayerIndex >= this.PlayersInPlay.length) {
+            this.endGame(this.DealerHand, this.PlayersInPlay);
+          }
+        } else {
+            player.currentHandIndex++;
+        }
+      } else if (standAfterHit) {
+        this.stand(player);
+      }
+      if (player === this.User) {
+        console.log(this.basicStrategyService.DecideBSAction(this.DealerHand.cards, player.PlayerHands[player.currentHandIndex].cards));
+      }
+    } else {
+      if (handInPlay.cards.length === 0) {
+        this.message = 'Please Start the game first';
+      } else {
+        this.message = 'Deck has to few cards left to play, please reset the deck';
+      }
+    }
+  }
+
+  double(player: Player): void {
+    this.User.PlayerBets[this.User.currentHandIndex] *= 2;
+    this.hit(player, true);
+  }
+  split(player: Player): void {
+    const card: Card = this.User.PlayerHands[this.User.currentHandIndex].popCard();
+    this.User.PlayerHands.push(new Hand());
+    this.User.PlayerHands[this.User.currentHandIndex + 1].addCard(card);
+    this.User.PlayerBets.push(player.PlayerOriginalBet);
+  }
+
+  calculateWinnings(dealerHand: Hand, playerHand: Hand, bet: number): number {
+    if (playerHand.score() > 21) {
+      return -bet;
+    } else {
+      if (dealerHand.score() > 21) {
+        if (playerHand.cards.length === 2 && playerHand.score() === 21) {
+          return Math.floor(1.5 * bet);
+        } else {
+          return bet;
+        }
+      } else {
+        if (21 - playerHand.score() < 21 - dealerHand.score()) {
+          if (playerHand.cards.length === 2 && playerHand.score() === 21) {
+            return Math.floor(1.5 * bet);
+          } else {
+            return bet;
+          }
+        } else {
+          if (playerHand.score() === dealerHand.score()) {
+            if (playerHand.cards.length === 2 && playerHand.score() === 21 && dealerHand.cards.length > 2) {
+              return Math.floor(1.5 * bet);
+            } else {
+              return 0;
+            }
+          } else {
+            return -bet;
+          }
+        }
+      }
+    }
+  }
+  endGame(dealerHand: Hand, players: Player[]) {
+    this.runningGame = false;
+    let dealerDeal = false;
+    for (const player of players) {
+      for (const hand of player.PlayerHands) {
+        if (hand.score() <= 21) {
+          dealerDeal = true;
+        }
+      }
+    }
+    if (dealerDeal) {
       while (this.DealerHand.score() < 17) {
         this.DealCard(this.DealerHand);
       }
-      this.PlayerMoney = this.PlayerMoney + this.calculateWinnings(playingHand, this.DealerHand);
-    } else {
-      if (this.currentHand === this.PlayerHand) {
-        this.currentHand = this.PlayerSecondHand;
-      } else {
-        this.runningGame = false;
-        while (this.DealerHand.score() < 17) {
-          this.DealCard(this.DealerHand);
-        }
-        this.PlayerMoney = this.PlayerMoney + this.calculateWinnings(this.PlayerHand, this.DealerHand);
-        this.PlayerMoney = this.PlayerMoney + this.calculateWinnings(this.PlayerSecondHand, this.DealerHand);
-      }
     }
-  }
-  hit(playingHand: Hand): void {
-    if (this.Decks.length > 0 && playingHand.cards.length > 0) {
-      this.DealCard(playingHand);
-      if (playingHand.score() > 21) {
-        if (playingHand === this.PlayerHand && this.PlayerSecondHand.cards.length === 0) {
-          this.runningGame = false;
-          this.PlayerMoney = this.PlayerMoney - this.PlayerBet;
-        } else {
-          if (playingHand === this.PlayerSecondHand) {
-            this.runningGame = false;
-            this.PlayerMoney = this.PlayerMoney - this.PlayerBet;
-          } else {
-            this.currentHand = this.PlayerSecondHand;
-          }
-        }
-      }
-      console.log(this.basicStrategyService.DecideBSAction(this.DealerHand.cards, this.PlayerHand.cards));
-    } else {
-      if (playingHand.cards.length === 0) {
-        this.message = 'Please Start the game first';
-      } else {
-        this.message = 'Deck has to few cards left to play, please reset the deck';
-      }
-    }
-  }
-  double(playingHand: Hand): void {
-    if (this.Decks.length > 0 && this.PlayerHand.cards.length > 0) {
-      this.DealCard(playingHand);
-      this.addBet(this.PlayerBet);
-      if (playingHand.score() > 21) {
-        this.runningGame = false;
-        this.PlayerMoney = this.PlayerMoney - this.PlayerBet;
-        this.PlayerBet = Math.floor(this.PlayerBet / 2);
-      }else{
-        this.stand(playingHand);
-        this.PlayerBet = Math.floor(this.PlayerBet / 2);
-      }
-    } else {
-      if (this.PlayerHand.cards.length === 0) {
-        this.message = 'Please Start the game first';
-      } else {
-        this.message = 'Deck has to few cards left to play, please reset the deck';
-      }
-    }
-  }
-  split(): void {
-    const card: Card = this.PlayerHand.popCard();
-    this.PlayerSecondHand.addCard(card);
-  }
-
-  calculateWinnings(playerHand: Hand, dealerHand: Hand): number {
-    if (dealerHand.score() > 21) {
-      if (playerHand.cards.length === 2 && playerHand.score() === 21) {
-        return Math.floor(1.5 * this.PlayerBet);
-      } else {
-        return this.PlayerBet;
-      }
-    } else {
-      if (21 - playerHand.score() < 21 - dealerHand.score()) {
-        if (playerHand.cards.length === 2 && playerHand.score() === 21) {
-          return Math.floor(1.5 * this.PlayerBet);
-        } else {
-          return this.PlayerBet;
-        }
-      } else {
-        if (playerHand.score() === dealerHand.score()) {
-          if (playerHand.cards.length === 2 && playerHand.score() === 21 && dealerHand.cards.length > 2) {
-            return Math.floor(1.5 * this.PlayerBet);
-          } else {
-            return 0;
-          }
-        } else {
-          return -this.PlayerBet;
+    for (const player of players) {
+      for (let i = 0; i < player.PlayerHands.length; i++) {
+        player.PlayerMoney += this.calculateWinnings(dealerHand, player.PlayerHands[i], player.PlayerBets[i]);
+        console.log(this.calculateWinnings(dealerHand, player.PlayerHands[i], player.PlayerBets[i]));
         }
       }
     }
-  }
   setMoney(amount: number): void {
-    this.PlayerMoney = amount;
+    this.User.PlayerMoney = amount;
   }
   addBet(amount: number): void {
-    this.PlayerBet = this.PlayerBet + amount;
+    this.User.PlayerOriginalBet += amount;
   }
   minusBet(amount: number): void {
-    if (this.PlayerBet > 50) {
-      this.PlayerBet = this.PlayerBet - amount;
+    if (this.User.PlayerOriginalBet > 50) {
+      this.User.PlayerOriginalBet -= amount;
     }
   }
   resetBet(amount: number): void {
-    this.PlayerBet = amount;
+    this.User.PlayerOriginalBet = amount;
   }
   checkDuplicates(hand: Hand): boolean {
     if (hand.cards.length === 2) {
@@ -187,7 +196,5 @@ export class GameComponent implements OnInit {
     this.initialiseDecks(this.numberOfDecks);
     this.shuffle(this.Decks);
   }
-
-
 
 }
