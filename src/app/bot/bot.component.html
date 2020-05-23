@@ -1,0 +1,10 @@
+<div style="padding-top: 0">
+  Bot1's hand<span *ngIf="!this.gameService.runningGame"> ---- Bot1 Score: {{this.botPlayer.PlayerHands[0].score()}}</span>
+  <div style="height: 180px" class="bg-success show">
+    <ul class="sideways">
+      <li class="sideways" *ngFor="let card of this.botPlayer.PlayerHands[0].cards">
+          <img width="140px" height="180px" alt="card" [src]="card.img">
+      </li>
+    </ul>
+  </div>
+</div>
