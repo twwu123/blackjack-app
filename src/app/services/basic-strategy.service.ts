@@ -37,15 +37,15 @@ export class BasicStrategyService {
   }
 
   HardTotalAction(DealerCard: Card, PlayerDeck: Card[]): string {
-    return this.basicStrategyData.getHardTotalData(this.calculateHandvalue(PlayerDeck) - 1, DealerCard.value - 1);
+    return this.basicStrategyData.getHardTotalData(this.calculateHandvalue(PlayerDeck), DealerCard.value);
   }
 
   SoftTotalAction(DealerCard: Card, PlayerDeck: Card[]): string {
-    return this.basicStrategyData.getSoftTotalData(this.calculateHandvalue(PlayerDeck) - 1, DealerCard.value - 1);
+    return this.basicStrategyData.getSoftTotalData(this.calculateHandvalue(PlayerDeck), DealerCard.value);
   }
 
   SplitDecision(DealerCard: Card, playerCardValue: number): string {
-    return this.basicStrategyData.getPairSplitData(playerCardValue - 1, DealerCard.value - 1);
+    return this.basicStrategyData.getPairSplitData(playerCardValue, DealerCard.value);
   }
 
   calculateHandvalue(hand: Card[]): number {

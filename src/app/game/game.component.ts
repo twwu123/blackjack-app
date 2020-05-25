@@ -4,6 +4,7 @@ import { Card } from '../../card';
 import { Hand } from '../../hand';
 import { Player } from '../../player';
 import { BasicStrategyService } from 'src/app/services/basic-strategy.service';
+import {CardCountingStrategyData} from 'src/app/models/CardCountingStrategyData';
 
 @Component({
   selector: 'app-game',
@@ -19,12 +20,19 @@ export class GameComponent implements OnInit {
   User: Player = new Player(this.money, this.bet, [new Hand()]);
   PlayersInPlay: Player[] = [this.User];
   currentPlayerIndex = 0;
-  message: string;
+  message: string = 'Hello';
   runningGame = false;
   CardBack: Card = { value: 0, suit: 'NA', face: 'NA', img: 'assets/imgs/cards/cardback.png' };
+  BasicStrategySuggestion : string = ' '; 
+  CardCountingValue: number;
+  CardCountingStrategy : string = 'HiLo';
+  cardCountingData = new CardCountingStrategyData();
+
   constructor(private basicStrategyService: BasicStrategyService) { }
+  
   initialiseDecks(numberOfDecks: number): void {
     this.Decks = [];
+    this.CardCountingValue = 0;
     for (let i = 0; i < numberOfDecks; i++) {
       this.Decks = this.Decks.concat(DECK);
     }
@@ -38,6 +46,7 @@ export class GameComponent implements OnInit {
     }
   }
   dealCards(): void {
+    this.BasicStrategySuggestion = ' ';
     if (this.Decks.length > 20) {
       if (!this.runningGame) {
         this.message = '';
@@ -54,8 +63,8 @@ export class GameComponent implements OnInit {
             this.stand(player);
           }
         }
-        console.log(this.basicStrategyService.DecideBSAction(this.DealerHand.cards,
-          this.User.PlayerHands[this.User.currentHandIndex].cards));
+        this.BasicStrategySuggestion = this.basicStrategyService.DecideBSAction(this.DealerHand.cards,
+          this.User.PlayerHands[this.User.currentHandIndex].cards);
       } else {
         this.message = 'Game already in play';
       }
@@ -66,6 +75,7 @@ export class GameComponent implements OnInit {
   DealCard(hand: Hand, amount: number = 1): void {
     for (let x = 0; x < amount; x++) {
       const card: Card = this.Decks.pop();
+      this.CardCountingValue += this.cardCountingData.getCardCountingValue(card.value, this.CardCountingStrategy);
       hand.addCard(card);
     }
   }
@@ -96,8 +106,8 @@ export class GameComponent implements OnInit {
         this.stand(player);
       }
       if (player === this.User) {
-        if (!standAfterHit) {
-          console.log(this.basicStrategyService.DecideBSAction(this.DealerHand.cards, player.PlayerHands[player.currentHandIndex].cards));
+        if (!standAfterHit && handInPlay.score() <= 21) {
+          this.BasicStrategySuggestion = this.basicStrategyService.DecideBSAction(this.DealerHand.cards, player.PlayerHands[player.currentHandIndex].cards);
         }
       }
     } else {

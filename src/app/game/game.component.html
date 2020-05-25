@@ -4,40 +4,45 @@
     <div class="col-sm">
       <div md-force-height="100px">
         <label>Number Of Decks:
-          <input [(ngModel)]="numberOfDecks" placeholder=4/>
+          <input [(ngModel)]="numberOfDecks" placeholder=4 />
         </label>
-        <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" [disabled]="runningGame" (click)="initialiseDecks(numberOfDecks); shuffle(Decks)">Reset deck</button>
-        <span [ngStyle]="{'margin-left.px': 30}" >  Number of cards left: </span>{{Decks.length}}
+        <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" [disabled]="runningGame"
+          (click)="initialiseDecks(numberOfDecks); shuffle(Decks)">Reset deck</button>
+        <span [ngStyle]="{'margin-left.px': 30}"> Number of cards left: </span>{{Decks.length}}
       </div>
       <div>
         Dealer's hand<span *ngIf="!runningGame"> ---- Dealer Score: {{this.DealerHand.score()}}</span>
         <div style="height: 180px" class="bg-success show">
-        <ul class="sideways">
-          <li class="sideways" *ngFor="let card of DealerHand.cards, let i = index">
-            <img *ngIf="runningGame && i === 1 && DealerHand.cards.length === 2; else elseBlock" width="140px" height="180px" alt="card" [src]="CardBack.img">
-            <ng-template #elseBlock>
-              <img width="140px" height="180px" alt="card" [src]="card.img">
-            </ng-template>
-          </li>
-        </ul>
+          <ul class="sideways">
+            <li class="sideways" *ngFor="let card of DealerHand.cards, let i = index">
+              <img *ngIf="runningGame && i === 1 && DealerHand.cards.length === 2; else elseBlock" width="140px"
+                height="180px" alt="card" [src]="CardBack.img">
+              <ng-template #elseBlock>
+                <img width="140px" height="180px" alt="card" [src]="card.img">
+              </ng-template>
+            </li>
+          </ul>
         </div>
       </div>
       <div>
-        <span>Your Hand</span> ---- Hand Bet: {{this.User.PlayerBets[0]}} ---- Score: {{this.User.PlayerHands[0].score()}}
+        <span>Your Hand</span> ---- Hand Bet: {{this.User.PlayerBets[0]}} ---- Score:
+        {{this.User.PlayerHands[0].score()}}
         <div style="height: 180px" class="bg-success show">
-          <div [ngClass]="{'current': currentPlayerIndex === 0 && PlayersInPlay[currentPlayerIndex].currentHandIndex === 0}">
-           <ul class="sideways">
-            <li class="sideways" *ngFor="let card of this.User.PlayerHands[0].cards">
-             <img width="140px" height="180px" alt="card" src='{{card.img}}'>
-            </li>
-           </ul>
+          <div
+            [ngClass]="{'current': currentPlayerIndex === 0 && PlayersInPlay[currentPlayerIndex].currentHandIndex === 0}">
+            <ul class="sideways">
+              <li class="sideways" *ngFor="let card of this.User.PlayerHands[0].cards">
+                <img width="140px" height="180px" alt="card" src='{{card.img}}'>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
       <div style="padding-top: 10px" *ngIf="this.User.PlayerHands[1]">
-        <span>Second Hand</span> Hand Bet: {{this.User.PlayerBets[1]}}  Points: {{this.User.PlayerHands[1].score()}}
+        <span>Second Hand</span> Hand Bet: {{this.User.PlayerBets[1]}} Points: {{this.User.PlayerHands[1].score()}}
         <div class="bg-success">
-          <div [ngClass]="{'current': currentPlayerIndex === 0 && PlayersInPlay[currentPlayerIndex].currentHandIndex === 1}">
+          <div
+            [ngClass]="{'current': currentPlayerIndex === 0 && PlayersInPlay[currentPlayerIndex].currentHandIndex === 1}">
             <ul class="sideways">
               <li class="sideways" *ngFor="let card of this.User.PlayerHands[1].cards">
                 <img width="140px" height="180px" alt="card" src='{{card.img}}'>
@@ -51,7 +56,7 @@
           <div class="col-sm">
             <div class="row">
               <div class="col-sm">
-                <button mat-raised-button (click)="dealCards()">Deal Cards</button>
+                <button mat-raised-button [disabled]="(runningGame)" (click)="dealCards()">Deal Cards</button>
               </div>
               <div class="col-sm">
                 <button mat-raised-button [disabled]="!(runningGame)" (click)="stand(this.User)">Stand</button>
@@ -76,12 +81,12 @@
           <div class="col-sm">
             <span>PlayerBet: </span> {{this.User.PlayerOriginalBet}}
           </div>
-         <div class="col-sm">
-           <button mat-raised-button [disabled]="(runningGame)" (click)="addBet(50)">+50</button>
-         </div>
-         <div class="col-sm">
-           <button mat-raised-button [disabled]="(runningGame)" (click)="minusBet(50)">-50</button>
-         </div>
+          <div class="col-sm">
+            <button mat-raised-button [disabled]="(runningGame)" (click)="addBet(50)">+50</button>
+          </div>
+          <div class="col-sm">
+            <button mat-raised-button [disabled]="(runningGame)" (click)="minusBet(50)">-50</button>
+          </div>
           <div class="col-sm">
             <button mat-raised-button [disabled]="(runningGame)" (click)="resetBet(50)">50</button>
           </div>
@@ -93,10 +98,30 @@
             <span>PlayerMoney: </span> {{this.User.PlayerMoney}}
           </div>
           <div class="col-sm">
-          <label>Amount:
-            <input [(ngModel)]="money" placeholder=1000/>
-          </label>
+            <label>Amount:
+              <input [(ngModel)]="money" placeholder=1000 />
+            </label>
             <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" (click)="setMoney(money)">Set Money</button>
+          </div>
+        </div>
+      </div>
+      <div style="padding-top: 50px">
+        <div class="row">
+          <div class="col-sm">
+            <div class="StrategyParent">
+              Basic Strategy suggestion:
+              <div class="StrategyChild">
+                {{BasicStrategySuggestion}}
+              </div>
+            </div>
+          </div>
+          <div class="col-sm">
+            <div class="StrategyParent">
+              Running Card Count / Total Card Count
+              <div class="StrategyChild">
+                {{CardCountingValue + " / " + CardCountingValue/numberOfDecks}}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -110,4 +135,3 @@
 <div *ngIf="message">
   <span>{{message}}</span>
 </div>
-

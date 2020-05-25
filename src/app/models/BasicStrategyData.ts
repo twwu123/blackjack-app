@@ -1,5 +1,5 @@
 export class BasicStrategyData {
-    Action = {
+    private Action = {
         H: 'Hit',
         S: 'Stand',
         D: 'Double if allowed, otherwise Hit',
@@ -68,21 +68,24 @@ export class BasicStrategyData {
     ];
 
     public getHardTotalData(
-        playerHandIndex: number,
-        dealerHandIndex: number
+        playerHandValue: number,
+        dealerHandValue: number
     ): string {
-        return this.Action[this.HardTotalData[playerHandIndex][dealerHandIndex]];
+        return this.Action[this.HardTotalData[playerHandValue-1][dealerHandValue-1]];
     }
     public getSoftTotalData(
-        playerHandIndex: number,
-        dealerHandIndex: number
+        playerHandValue: number,
+        dealerHandValue: number
     ): string {
-        return this.Action[this.SoftTotalData[playerHandIndex][dealerHandIndex]];
+        return this.Action[this.SoftTotalData[playerHandValue-1][dealerHandValue-1]];
     }
     public getPairSplitData(
-        playerHandIndex: number,
-        dealerHandIndex: number
+        playerHandValue: number,
+        dealerHandValue: number
     ): string {
-        return this.Action[this.PairSplitData[playerHandIndex][dealerHandIndex]];
+        if (this.PairSplitData[playerHandValue-1][dealerHandValue-1] === 'N'){
+            return this.Action[this.getHardTotalData[playerHandValue*2-1][dealerHandValue-1]]
+        }
+        return this.Action[this.PairSplitData[playerHandValue-1][dealerHandValue-1]];
     }
 }
