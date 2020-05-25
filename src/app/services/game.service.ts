@@ -3,6 +3,8 @@ import {DECK} from '../../deck';
 import {Card} from '../../card';
 import {Hand} from '../../hand';
 import {Player} from '../../player';
+import {Subject} from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +19,13 @@ export class GameService {
   PlayersWithoutBlackjack: Player[] = []; // Track who doesn't have blackjack, players with blackjack shouldn't make moves
   currentPlayerIndex = 0; // This will track which player can make moves
   CardBack: Card = {value: 0, suit: 'NA', face: 'NA', img: 'assets/imgs/cards/cardback.png'};
+
+  public currentPlayer = new Subject<Player>();
+  public currentPlayer$ = this.currentPlayer.asObservable();
+
+  public updateCurrentPlayer(newPlayer: Player) {
+    this.currentPlayer.next(newPlayer);
+  }
 
   shuffle(Decks: Card[]): void {
     for (let i = Decks.length - 1; i > 0; i--) {
@@ -37,6 +46,13 @@ export class GameService {
   addPlayerToPlay(player: Player): void {
     if (this.PlayersInPlay.indexOf(player) === -1) {
       this.PlayersInPlay.push(player);
+    }
+  }
+
+  removePlayerFromPlay(player: Player): void {
+    const playerIndex = this.PlayersInPlay.indexOf(player);
+    if (playerIndex > -1) {
+      this.PlayersInPlay.splice(playerIndex, 1);
     }
   }
 
@@ -96,7 +112,6 @@ export class GameService {
     for (const player of players) {
       for (let i = 0; i < player.PlayerHands.length; i++) {
         player.PlayerMoney += this.calculateWinnings(player.PlayerHands[i], player.PlayerBets[i]);
-        console.log(this.calculateWinnings(player.PlayerHands[i], player.PlayerBets[i]));
       }
     }
   }
@@ -141,9 +156,12 @@ export class GameService {
   // If the player isn't making decisions for their last hand, then we move onto their next hand (this means they have split)
   moveToNextHandOrPlayer(player: Player): void {
     if (player.currentHandIndex === player.PlayerHands.length - 1) {
-      this.currentPlayerIndex++;
-      if (this.currentPlayerIndex >= this.PlayersInPlay.length) {
+      if (player === this.PlayersWithoutBlackjack[this.PlayersWithoutBlackjack.length - 1]) {
         this.endGame(this.PlayersInPlay);
+        this.updateCurrentPlayer(this.PlayersInPlay[0]);
+      } else {
+        this.currentPlayerIndex++;
+        this.updateCurrentPlayer(this.PlayersWithoutBlackjack[this.currentPlayerIndex]);
       }
     } else {
       player.currentHandIndex++;

@@ -28,7 +28,7 @@
       <div>
         <span>Your Hand</span> ---- Hand Bet: {{this.User.PlayerBets[0]}} ---- Score: {{this.User.PlayerHands[0].score()}}
         <div style="height: 180px" class="bg-success show">
-          <div [ngClass]="{'current': this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] === this.User &&
+          <div [ngClass]="{'current': currentActivePlayer === this.User &&
           this.User.currentHandIndex === 0}">
            <ul class="sideways">
             <li class="sideways" *ngFor="let card of this.User.PlayerHands[0].cards">
@@ -41,7 +41,7 @@
       <div style="padding-top: 10px" *ngIf="this.User.PlayerHands[1]">
         <span>Second Hand</span> ---- Hand Bet: {{this.User.PlayerBets[1]}} ---- Score: {{this.User.PlayerHands[1].score()}}
         <div class="bg-success">
-          <div [ngClass]="{'current': this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] === this.User &&
+          <div [ngClass]="{'current': currentActivePlayer === this.User &&
             this.User.currentHandIndex === 1}">
             <ul class="sideways">
               <li class="sideways" *ngFor="let card of this.User.PlayerHands[1].cards">
@@ -60,20 +60,20 @@
               </div>
               <div class="col-sm">
                 <button mat-raised-button [disabled]="!(this.gameService.runningGame) ||
-                (this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] !== this.User)" (click)="this.playersService.stand(this.User)">Stand</button>
+                (currentActivePlayer !== this.User)" (click)="this.playersService.stand(this.User)">Stand</button>
               </div>
               <div class="col-sm">
                 <button mat-raised-button [disabled]="!(this.gameService.runningGame) ||
-                (this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] !== this.User)" (click)="this.playersService.hit(this.User)">Hit</button>
+                (currentActivePlayer !== this.User)" (click)="this.playersService.hit(this.User)">Hit</button>
               </div>
               <div class="col-sm">
                 <button mat-raised-button [disabled]="!(this.gameService.runningGame) || (this.User.PlayerHands[0].cards.length != 2) ||
-                  (this.User.PlayerHands.length != 1) || this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] !== this.User"
+                  (this.User.PlayerHands.length != 1) || currentActivePlayer !== this.User"
                   (click)="this.playersService.double(this.User)">Double</button>
               </div>
               <div class="col-sm">
                 <button mat-raised-button [disabled]="(!(this.gameService.runningGame) || (this.User.PlayerHands.length === 2)) ||
-                !this.playersService.checkDuplicates(this.User.PlayerHands[0]) || this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] !== this.User"
+                !this.playersService.checkDuplicates(this.User.PlayerHands[0]) || currentActivePlayer !== this.User"
                 (click)="this.playersService.split(this.User)">Split</button>
               </div>
             </div>
@@ -113,11 +113,12 @@
     <div class="col-sm">
       <div md-force-height="100px">
         <label>Number of Bots to Add:
-          <input placeholder=1/>
+          <input [(ngModel)]="botsToAdd" placeholder=1/>
         </label>
-        <button  mat-raised-button [ngStyle]="{'margin-left.px': 30}">Add Bots</button>
+        <button mat-raised-button [disabled]="(this.gameService.runningGame)" [ngStyle]="{'margin-left.px': 30}" (click)="addBot(botsToAdd)">Add Bots</button>
+        <div #appendHere>
+        </div>
       </div>
-      <app-bot></app-bot>
     </div>
   </div>
 </div>
