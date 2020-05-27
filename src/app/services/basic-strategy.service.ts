@@ -11,8 +11,7 @@ export class BasicStrategyService {
 
   DecideBSAction(DealerDeck: Card[], PlayerDeck: Card[]): string {
     let containsAce = false;
-    const playerAction = '';
-    let dealerUpCard: Card = DealerDeck[0];
+    const dealerUpCard: Card = DealerDeck[0];
     if (PlayerDeck.length === 2) {  // check if player hand is a duplicate, in which case check if we should split
       if (PlayerDeck[0].value === PlayerDeck[1].value) {
         return this.SplitDecision(dealerUpCard, PlayerDeck[0].value);

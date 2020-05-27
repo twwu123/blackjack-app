@@ -1,6 +1,6 @@
 export class CardCountingStrategyData {
     private HiLoCardValues = {
-        //Card value: card counting value
+        // Card value: card counting value
         1: -1,
         2: 1,
         3: 1,
@@ -11,9 +11,9 @@ export class CardCountingStrategyData {
         8: 0,
         9: 0,
         10: -1
-    }
+    };
     private OmegaIICardValues = {
-        //Card value: card counting value
+        // Card value: card counting value
         1: 0,
         2: 1,
         3: 1,
@@ -24,9 +24,9 @@ export class CardCountingStrategyData {
         8: 0,
         9: -1,
         10: -2
-    }
+    };
     private HalvesCardValues = {
-        //Card value: card counting value
+        // Card value: card counting value
         1: 0,
         2: 0.5,
         3: 1,
@@ -37,8 +37,8 @@ export class CardCountingStrategyData {
         8: 0,
         9: -0.5,
         10: -1
-    }
-    public getCardCountingValue(cardValue : number, strategy:string) : number {
+    };
+    public getCardCountingValue(cardValue: number, strategy: string): number {
         if (strategy === 'Halves'){
             return this.HalvesCardValues[cardValue];
         }else if (strategy  === 'OmegaII'){

@@ -1,0 +1,13 @@
+<div>
+  Bot1's hand<span> ---- Bot1 Score: {{this.botPlayer.PlayerHands[0].score()}} ---- Bot1 Money: {{this.botPlayer.PlayerMoney}} ---- Bot1 bet: {{this.botPlayer.PlayerBets[0]}}</span> ----
+  <button mat-raised-button (click)="removeBot()">Remove Bot</button>
+  <div style="height: 180px" class="bg-success show">
+    <div [ngClass]="{'current': this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] === this.botPlayer}">
+      <ul class="sideways">
+       <li class="sideways" *ngFor="let card of this.botPlayer.PlayerHands[0].cards">
+           <img width="140px" height="180px" alt="card" [src]="card.img">
+       </li>
+      </ul>
+    </div>
+  </div>
+</div>

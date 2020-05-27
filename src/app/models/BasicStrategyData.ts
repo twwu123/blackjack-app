@@ -71,21 +71,33 @@ export class BasicStrategyData {
         playerHandValue: number,
         dealerHandValue: number
     ): string {
-        return this.Action[this.HardTotalData[playerHandValue-1][dealerHandValue-1]];
+        const index1 = playerHandValue - 1;
+        const index2 = dealerHandValue - 1;
+        if (index1 >= 0 && index1 < 20) {
+          return this.Action[this.HardTotalData[index1][index2]];
+        } else {
+          return '';
+        }
     }
     public getSoftTotalData(
         playerHandValue: number,
         dealerHandValue: number
     ): string {
-        return this.Action[this.SoftTotalData[playerHandValue-1][dealerHandValue-1]];
+      const index1 = playerHandValue - 1;
+      const index2 = dealerHandValue - 1;
+      if (index1 >= 0 && index1 < 20) {
+        return this.Action[this.SoftTotalData[index1][index2]];
+      } else {
+        return '';
+      }
     }
     public getPairSplitData(
         playerHandValue: number,
         dealerHandValue: number
     ): string {
-        if (this.PairSplitData[playerHandValue-1][dealerHandValue-1] === 'N'){
-            return this.Action[this.getHardTotalData[playerHandValue*2-1][dealerHandValue-1]]
+        if (this.PairSplitData[playerHandValue - 1][dealerHandValue - 1] === 'N'){
+            return this.Action[this.HardTotalData[playerHandValue * 2 - 1][dealerHandValue - 1]];
         }
-        return this.Action[this.PairSplitData[playerHandValue-1][dealerHandValue-1]];
-    }
+        return this.Action[this.PairSplitData[playerHandValue - 1][dealerHandValue - 1]];
+      }
 }

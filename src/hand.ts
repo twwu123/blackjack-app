@@ -28,7 +28,6 @@ export class Hand {
         score = score + 11;
       }
     }
-    console.log(score);
     return score;
   }
 }
