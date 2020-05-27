@@ -23,6 +23,16 @@ export class GameService {
   public currentPlayer = new Subject<Player>();
   public currentPlayer$ = this.currentPlayer.asObservable();
 
+  public lastDealtCard = new Subject<Card>();
+  public lastDealtCard$ = this.lastDealtCard.asObservable();
+
+  public initDeckObs = new Subject<number>();
+  public initDeckObs$ = this.initDeckObs.asObservable();
+
+  public updateLastDealtCard(newCard: Card) {
+    this.lastDealtCard.next(newCard);
+  }
+
   public updateCurrentPlayer(newPlayer: Player) {
     this.currentPlayer.next(newPlayer);
   }
@@ -38,6 +48,7 @@ export class GameService {
 
   initialiseDecks(numberOfDecks: number): void {
     this.Decks = [];
+    this.initDeckObs.next(0);
     for (let i = 0; i < numberOfDecks; i++) {
       this.Decks = this.Decks.concat(DECK);
     }
@@ -91,6 +102,7 @@ export class GameService {
     for (let x = 0; x < amount; x++){
       const card: Card = this.Decks.pop();
       hand.addCard(card);
+      this.updateLastDealtCard(card);
     }
   }
 

@@ -11,12 +11,14 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BotComponent } from './bot/bot.component';
+import { StrategyComponent } from './strategy/strategy.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GameComponent,
     BotComponent,
+    StrategyComponent,
   ],
   imports: [
     BrowserModule,
