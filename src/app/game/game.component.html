@@ -27,11 +27,11 @@
       </div>
       <div>
         <span>Your Hand</span> ---- Hand Bet: {{this.User.PlayerBets[0]}} ---- Score: {{this.User.PlayerHands[0].score()}}
-        <div style="height: 180px" class="bg-success show">
+        <div style="height: 190px" class="bg-success show overflow-auto">
           <div [ngClass]="{'current': currentActivePlayer === this.User &&
           this.User.currentHandIndex === 0}">
-           <ul class="sideways">
-            <li class="sideways" *ngFor="let card of this.User.PlayerHands[0].cards">
+           <ul class="sideways stack">
+            <li class="sideways stack" *ngFor="let card of this.User.PlayerHands[0].cards">
              <img width="140px" height="180px" alt="card" src='{{card.img}}'>
             </li>
            </ul>
@@ -43,8 +43,8 @@
         <div class="bg-success">
           <div [ngClass]="{'current': currentActivePlayer === this.User &&
             this.User.currentHandIndex === 1}">
-            <ul class="sideways">
-              <li class="sideways" *ngFor="let card of this.User.PlayerHands[1].cards">
+            <ul class="sideways stack">
+              <li class="sideways stack" *ngFor="let card of this.User.PlayerHands[1].cards">
                 <img width="140px" height="180px" alt="card" src='{{card.img}}'>
               </li>
             </ul>
@@ -113,10 +113,7 @@
     </div>
     <div class="col-sm">
       <div md-force-height="100px">
-        <label>Number of Bots to Add:
-          <input [(ngModel)]="botsToAdd" placeholder=1/>
-        </label>
-        <button mat-raised-button [disabled]="(this.gameService.runningGame)" [ngStyle]="{'margin-left.px': 30}" (click)="addBot(botsToAdd)">Add Bots</button>
+        <button mat-raised-button [disabled]="(this.gameService.runningGame)" [ngStyle]="{'margin-left.px': 30}" (click)="addBot(1)">Add Bots</button>
         <div #appendHere>
         </div>
       </div>

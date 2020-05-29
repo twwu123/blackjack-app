@@ -15,7 +15,9 @@ export class PlayersService {
   }
 
   addBet(player: Player, amount: number): void {
-    player.PlayerOriginalBet += amount;
+    if (player.PlayerMoney >= player.PlayerOriginalBet + amount) {
+      player.PlayerOriginalBet += amount;
+    }
   }
 
   minusBet(player: Player, amount: number): void {
@@ -63,7 +65,8 @@ export class PlayersService {
 
   // Same implementation as hit with doubling the current hand's bet, but if it doesn't bust, then we stand straight away
   double(player: Player): void {
-    if (this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] === player) {
+    if (this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] === player
+      && player.PlayerMoney >= (player.totalBets() + player.PlayerBets[player.currentHandIndex])) {
       player.PlayerBets[player.currentHandIndex] *= 2;
       this.hit(player, true);
     }
@@ -71,7 +74,8 @@ export class PlayersService {
 
   // Adds an extra hand to the player and takes one card from the current hand and puts it in the last hand
   split(player: Player): void {
-    if (this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] === player) {
+    if (this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] === player
+      && player.PlayerMoney >= (player.totalBets() + player.PlayerBets[player.currentHandIndex])) {
       if (this.checkDuplicates(player.PlayerHands[player.currentHandIndex])) {
         const card: Card = player.PlayerHands[player.currentHandIndex].popCard();
         player.PlayerHands.push(new Hand());

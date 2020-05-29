@@ -37,7 +37,7 @@ export class StrategyComponent implements OnInit, OnDestroy {
   });
 
   getStrategy(strategy): string {
-    if (this.currentPlayer === this.player) {
+    if (this.currentPlayer === this.player && this.player.PlayerHands[this.player.currentHandIndex].cards.length > 0) {
      if (this.player.PlayerHands[this.player.currentHandIndex].cards.length === 1) {
        return 'Hit';
       } else {

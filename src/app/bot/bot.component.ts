@@ -36,11 +36,11 @@ export class BotComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.gameService.addPlayerToPlay(this.botPlayer);
+    this.gameService.addPlayerToBoard(this.botPlayer);
   }
 
   ngOnDestroy() {
-    this.gameService.removePlayerFromPlay(this.botPlayer);
+    this.gameService.removePlayerFromBoard(this.botPlayer);
     this.currentPlayerSubscription.unsubscribe();
   }
 }

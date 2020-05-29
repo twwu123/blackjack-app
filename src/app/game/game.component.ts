@@ -38,19 +38,17 @@ export class GameComponent implements OnInit, OnDestroy {
   });
 
   addBot(num: number): void {
-    for (let i = 0; i < num; i ++) {
-      if (this.gameService.PlayersInPlay.length < 4) {
+      if (this.gameService.PlayersOnBoard.length < 4) {
         const childComponent = this.resolver.resolveComponentFactory(BotComponent);
         this.componentRef = this.target.createComponent(childComponent);
         this.componentRef.instance.ref = this.componentRef;
       }
-    }
   }
 
   ngOnInit(): void {
     this.gameService.initialiseDecks(this.numberOfDecks);
     this.gameService.shuffle(this.gameService.Decks);
-    this.gameService.addPlayerToPlay(this.User);
+    this.gameService.addPlayerToBoard(this.User);
     this.gameService.updateCurrentPlayer(this.User);
   }
 

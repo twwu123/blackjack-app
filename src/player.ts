@@ -6,6 +6,15 @@ export class Player {
   PlayerBets: number[]; // Players can have multiple hands where they can double, so there can be multiple bets
   PlayerHands: Hand[]; // Players can have multiple hands when they split
   currentHandIndex: number; // This tracks which hand they're currently playing
+
+  totalBets(): number {
+    let total = 0;
+    for (const num of this.PlayerBets) {
+      total += num;
+    }
+    return total;
+  }
+
   constructor(money: number, bet: number, hands: Hand[], index = 0) {
     this.PlayerMoney = money;
     this.PlayerOriginalBet = bet;

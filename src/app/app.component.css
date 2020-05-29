@@ -12,6 +12,7 @@ ul.sideways {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  float: left;
 }
 
 li.sideways {
@@ -24,6 +25,10 @@ li.sideways a {
   text-align: center;
   padding: 16px;
   text-decoration: none;
+}
+
+li.stack {
+  position: absolute;
 }
 
 div.StrategyParent{

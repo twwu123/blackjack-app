@@ -15,6 +15,7 @@ export class GameService {
   runningGame = false;
   DealerHand: Hand = new Hand();
   message: string;
+  PlayersOnBoard: Player[] = []; // Track who is on the board
   PlayersInPlay: Player[] = []; // Track who is playing
   PlayersWithoutBlackjack: Player[] = []; // Track who doesn't have blackjack, players with blackjack shouldn't make moves
   currentPlayerIndex = 0; // This will track which player can make moves
@@ -54,16 +55,16 @@ export class GameService {
     }
   }
 
-  addPlayerToPlay(player: Player): void {
-    if (this.PlayersInPlay.indexOf(player) === -1) {
-      this.PlayersInPlay.push(player);
+  addPlayerToBoard(player: Player): void {
+    if (this.PlayersOnBoard.indexOf(player) === -1) {
+      this.PlayersOnBoard.push(player);
     }
   }
 
-  removePlayerFromPlay(player: Player): void {
-    const playerIndex = this.PlayersInPlay.indexOf(player);
+  removePlayerFromBoard(player: Player): void {
+    const playerIndex = this.PlayersOnBoard.indexOf(player);
     if (playerIndex > -1) {
-      this.PlayersInPlay.splice(playerIndex, 1);
+      this.PlayersOnBoard.splice(playerIndex, 1);
     }
   }
 
@@ -77,6 +78,17 @@ export class GameService {
         this.DealerHand.cards = []; // Reset Dealer Hand
         this.PlayersWithoutBlackjack = []; // Reset players with blackjack
         this.DealCard(this.DealerHand, 2);
+        this.PlayersInPlay = [];
+        for (const player of this.PlayersOnBoard) {
+          if (player.PlayerMoney >= player.PlayerOriginalBet) {
+            this.PlayersInPlay.push(player);
+          } else {
+            player.PlayerHands = [new Hand()];
+          }
+        }
+        if (this.PlayersInPlay.length === 0) {
+          this.endGame(this.PlayersInPlay);
+        }
         // Loop through all players, reset their hand and bets
         for (const player of this.PlayersInPlay) {
           player.currentHandIndex = 0;
