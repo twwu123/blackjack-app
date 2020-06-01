@@ -9,10 +9,11 @@ import {
 } from '@angular/core';
 import { Hand } from '../../hand';
 import { Player } from '../../player';
-import {BasicStrategyService} from 'src/app/services/basic-strategy.service';
-import {PlayersService} from 'src/app/services/players.service';
-import {GameService} from '../services/game.service';
+import { PlayersService } from 'src/app/services/players.service';
+import { GameService } from '../services/game.service';
 import { BotComponent } from '../bot/bot.component';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { StrategyDialogComponent } from '../strategy-dialog/strategy-dialog.component';
 
 @Component({
   selector: 'app-game',
@@ -27,10 +28,10 @@ export class GameComponent implements OnInit, OnDestroy {
   botsToAdd = 1;
   currentActivePlayer: Player;
 
-  constructor(private basicStrategyService: BasicStrategyService, public readonly playersService: PlayersService,
-              public readonly gameService: GameService, private resolver: ComponentFactoryResolver) { }
+  constructor(public readonly playersService: PlayersService, public readonly gameService: GameService,
+    private resolver: ComponentFactoryResolver, public dialog: MatDialog) { }
 
-  @ViewChild('appendHere', {static : false, read : ViewContainerRef}) target: ViewContainerRef;
+  @ViewChild('appendHere', { static: false, read: ViewContainerRef }) target: ViewContainerRef;
   private componentRef: ComponentRef<any>;
 
   public currentPlayerSubscription = this.gameService.currentPlayer$.subscribe(player => {
@@ -38,7 +39,7 @@ export class GameComponent implements OnInit, OnDestroy {
   });
 
   addBot(num: number): void {
-    for (let i = 0; i < num; i ++) {
+    for (let i = 0; i < num; i++) {
       if (this.gameService.PlayersInPlay.length < 4) {
         const childComponent = this.resolver.resolveComponentFactory(BotComponent);
         this.componentRef = this.target.createComponent(childComponent);
@@ -56,5 +57,12 @@ export class GameComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.currentPlayerSubscription.unsubscribe();
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(StrategyDialogComponent, {
+      autoFocus: false,
+      width: "65%"
+    });
   }
 }

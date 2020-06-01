@@ -1,0 +1,57 @@
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
+<h1 mat-dialog-title style="text-align: center;">Basic Strategy guide</h1>
+<div mat-dialog-content>
+    <p><strong>Disclaimer:</strong> Basic Strategy is not enough to beat the House edge even if you get lucky from time
+        to time. The
+        House has a huge advantage in that the players always play first, meaning if a player goes bust, it is an
+        automatic lose for the player before the dealer even plays. Whilst basic strategy provides a good guideline, you
+        will need counting, deviations, true count conversions and betting strategy to actually beat the game of black
+        jack. </p>
+    <h2>What is Basic Strategy?</h2>
+    <p>Basic stategy is a set of suggested actions at each scenario derived from a computer simulation. A simulation was
+        set up where a computer played serveral hundreds of million hands of blackjack and recorded what happend.
+        Through trial and error, it determined which actions have the greatest odds of success given every possible
+        combination of starting hand and dealer up card. Despite playing the "Best action" for each hand, the player
+        will still lose money to the House over time due to the House's edge. If you are curious about the calculations,
+        check out Mike Shakleford's video where he builds <a
+            href="https://www.youtube.com/watch?v=jCF-Btu5ZCk&feature=youtu.be" target="_blank">Basic strategy from
+            scratch using excel</a>.</p>
+    <h2>Basic Strategy Order of actions</h2>
+    <ol>
+        <li>
+            <h3><strong>Can I/Should I Surrender?</strong></h3>
+            <p>If you are playing in a casino that offers surrender (also known as Late Surrender/LS), you will only be
+                able to surrender on the first two cards. This normally means you lose half of what you bet but stop
+                playing the hand. Since you cannot surrender after any other action, "Should I surrender?" should be the
+                first thing you ask yourself when playing the hand. See the below table on what hand you should
+                surrender on: </p>
+            <img src="assets/imgs/StrategyTables/LateSurrender.PNG" alt="something" width="90%">
+            <p>Since surrendering is for cowards, we have disabled the option to surrender in our game.</p>
+        </li>
+        <li>
+            <h3><strong>Can I/Should I Split?</strong></h3>
+            <p>The second most important decision is whether or not to split. This will only be an option when your
+                first two cards are a pair or if you have two ten-valued cards (like a jack and a king). See table
+                below: </p>
+            <img src="assets/imgs/StrategyTables/Split.PNG" alt="something" width="90%">
+            <p>If the answer is NO you can’t or you shouldn’t split, you ask yourself….</p>
+        </li>
+        <li>
+            <h3><strong>Can I/Should I Double?</strong></h3>
+            <p>When basic strategy calls for doubling, it’s a really good thing! It means you’re likely to win the hand!
+                Some casinos restrict doubling on certain hands so it may not always be possible, but you want to make
+                sure you’ve ruled it out before you move on. If the answer is NO you can’t or you shouldn’t double, you
+                ask yourself… </p>
+        </li>
+        <li>
+            <h3><strong>Should I Hit or Stand?</strong></h3>
+            <p>The last thing you should think about when it comes to basic strategy is whether or not to take another
+                card. If the other options above are not appropriate for your hand then you would choose to hit or
+                stand. See table below for Double, Hit and Stand actions: </p>
+            <img src="assets/imgs/StrategyTables/SoftTotal.PNG" alt="something" width="90%">
+            <img src="assets/imgs/StrategyTables/HardTotal.PNG" alt="something" width="90%">
+        </li>
+    </ol>
+</div>

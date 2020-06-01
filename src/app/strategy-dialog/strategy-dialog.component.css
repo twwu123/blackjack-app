@@ -1,0 +1,13 @@
+.close-button {
+  float: right;
+  top: -24px;
+  right: -24px;
+}
+
+.close-icon {
+  transition: 1s ease-in-out;
+}
+
+.close-icon:hover {
+  transform: rotate(180deg);
+}

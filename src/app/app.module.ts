@@ -8,10 +8,14 @@ import { GameComponent } from './game/game.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BotComponent } from './bot/bot.component';
 import { StrategyComponent } from './strategy/strategy.component';
+import { StrategyDialogComponent } from './strategy-dialog/strategy-dialog.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +23,7 @@ import { StrategyComponent } from './strategy/strategy.component';
     GameComponent,
     BotComponent,
     StrategyComponent,
+    StrategyDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -27,7 +32,9 @@ import { StrategyComponent } from './strategy/strategy.component';
     HttpClientModule,
     BrowserAnimationsModule,
     MatButtonModule,
-    NgbModule
+    MatDialogModule,
+    NgbModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]
