@@ -1,20 +1,8 @@
-<div *ngIf="player" style="padding-top: 50px">
-  <div class="row">
-    <div class="col-sm">
-      <div class="StrategyParent">
-        Basic Strategy suggestion:
-        <div class="StrategyChild">
-          {{getStrategy(BasicStrategySuggestion)}}
-        </div>
+<div *ngIf="player">
+  <div class="StrategyParent">
+    Basic Strategy suggestion:
+      <div class="StrategyChild">
+        {{getStrategy(BasicStrategySuggestion)}}
       </div>
-    </div>
-    <div class="col-sm">
-      <div class="StrategyParent">
-        Running Card Count / Total Card Count
-        <div class="StrategyChild">
-          {{CardCountingValue + " / " + this.getTrueCount()}}
-        </div>
-      </div>
-    </div>
   </div>
 </div>

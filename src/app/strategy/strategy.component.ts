@@ -15,14 +15,9 @@ export class StrategyComponent implements OnInit, OnDestroy {
   @Input() player: Player;
   currentPlayer: Player;
   BasicStrategySuggestion = '';
-  CardCountingValue = 0;
-  CardCountingStrategy = 'HiLo';
-  cardCountingData = new CardCountingStrategyData();
-
 
   public lastCardSubscription = this.gameService.lastDealtCard$.subscribe(card => {
-    this.CardCountingValue += this.cardCountingData.getCardCountingValue(card.value, this.CardCountingStrategy);
-    if (this.player.PlayerHands && this.gameService.runningGame) {
+    if (this.player.PlayerHands) {
       this.BasicStrategySuggestion = this.basicStrategyService.DecideBSAction(this.gameService.DealerHand.cards,
         this.player.PlayerHands[this.player.currentHandIndex].cards);
     }
@@ -32,12 +27,8 @@ export class StrategyComponent implements OnInit, OnDestroy {
     this.currentPlayer = player;
   });
 
-  public initDeckSubscription = this.gameService.initDeckObs$.subscribe(num => {
-    this.CardCountingValue = num;
-  });
-
   getStrategy(strategy): string {
-    if (this.currentPlayer === this.player) {
+    if (this.gameService.runningGame) {
       if (this.player.PlayerHands[this.player.currentHandIndex].cards.length === 1) {
         return 'Hit';
       } else {
@@ -48,16 +39,12 @@ export class StrategyComponent implements OnInit, OnDestroy {
     }
   }
 
-  getTrueCount(): number {
-    return Math.round(this.CardCountingValue / Math.round(this.gameService.Decks.length / 52));
-  }
 
   ngOnInit(): void {
   }
 
   ngOnDestroy(): void {
     this.lastCardSubscription.unsubscribe();
-    this.initDeckSubscription.unsubscribe();
     this.currentPlayerSubscription.unsubscribe();
   }
 }

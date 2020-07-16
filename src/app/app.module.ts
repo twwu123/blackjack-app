@@ -10,12 +10,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { BotComponent } from './bot/bot.component';
 import { StrategyComponent } from './strategy/strategy.component';
 import { StrategyDialogComponent } from './strategy-dialog/strategy-dialog.component';
+import { CountComponent } from './count/count.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,7 @@ import { StrategyDialogComponent } from './strategy-dialog/strategy-dialog.compo
     BotComponent,
     StrategyComponent,
     StrategyDialogComponent,
+    CountComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,8 +36,10 @@ import { StrategyDialogComponent } from './strategy-dialog/strategy-dialog.compo
     HttpClientModule,
     BrowserAnimationsModule,
     MatButtonModule,
+    MatSlideToggleModule,
     MatDialogModule,
     NgbModule,
+    NgbDropdownModule,
     MatIconModule
   ],
   providers: [],

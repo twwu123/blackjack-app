@@ -12,8 +12,11 @@ import { Player } from '../../player';
 import { PlayersService } from 'src/app/services/players.service';
 import { GameService } from '../services/game.service';
 import { BotComponent } from '../bot/bot.component';
+import { BasicStrategyService } from 'src/app/services/basic-strategy.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { StrategyDialogComponent } from '../strategy-dialog/strategy-dialog.component';
+import { CardCountingStrategyData } from '../models/CardCountingStrategyData';
+
 
 @Component({
   selector: 'app-game',
@@ -21,31 +24,29 @@ import { StrategyDialogComponent } from '../strategy-dialog/strategy-dialog.comp
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit, OnDestroy {
-  numberOfDecks = 4;
+  numberOfDecks = 8;
   money = 1000;
   bet = 50;
   User: Player = new Player(this.money, this.bet, [new Hand()]); // Initialise User as a new player
-  botsToAdd = 1;
+  numberOfBots = 0;
+  strategyOn = true;
   currentActivePlayer: Player;
 
-  constructor(public readonly playersService: PlayersService, public readonly gameService: GameService,
-    private resolver: ComponentFactoryResolver, public dialog: MatDialog) { }
+  constructor(private basicStrategyService: BasicStrategyService, public readonly playersService: PlayersService,
+              public readonly gameService: GameService, private resolver: ComponentFactoryResolver, public dialog: MatDialog) { }
 
   @ViewChild('appendHere', { static: false, read: ViewContainerRef }) target: ViewContainerRef;
-  private componentRef: ComponentRef<any>;
 
   public currentPlayerSubscription = this.gameService.currentPlayer$.subscribe(player => {
     this.currentActivePlayer = player;
   });
 
-  addBot(num: number): void {
-    for (let i = 0; i < num; i++) {
-      if (this.gameService.PlayersInPlay.length < 4) {
-        const childComponent = this.resolver.resolveComponentFactory(BotComponent);
-        this.componentRef = this.target.createComponent(childComponent);
-        this.componentRef.instance.ref = this.componentRef;
-      }
-    }
+  setDecks(num: number): void {
+    this.numberOfDecks = num;
+  }
+
+  setBot(num: number): void {
+    this.numberOfBots = num;
   }
 
   ngOnInit(): void {
@@ -55,14 +56,14 @@ export class GameComponent implements OnInit, OnDestroy {
     this.gameService.updateCurrentPlayer(this.User);
   }
 
-  ngOnDestroy(): void {
-    this.currentPlayerSubscription.unsubscribe();
-  }
-
   openDialog(): void {
     const dialogRef = this.dialog.open(StrategyDialogComponent, {
       autoFocus: false,
-      width: "65%"
+      width: '65%'
     });
+  }
+
+  ngOnDestroy(): void {
+    this.currentPlayerSubscription.unsubscribe();
   }
 }

@@ -74,6 +74,7 @@ export class GameService {
         this.message = '';
         this.runningGame = true; // Starts an ended game
         this.currentPlayerIndex = 0; // Reset current player tracker
+        this.updateCurrentPlayer(this.PlayersInPlay[this.currentPlayerIndex]);
         this.DealerHand.cards = []; // Reset Dealer Hand
         this.PlayersWithoutBlackjack = []; // Reset players with blackjack
         this.DealCard(this.DealerHand, 2);
@@ -94,7 +95,7 @@ export class GameService {
         this.message = 'Game already in play';
       }
     } else {
-      this.message = 'Deck has to few cards left to play, please reset the deck';
+      this.message = 'Deck has too few cards left to play, please reset the deck';
     }
   }
 
@@ -168,11 +169,10 @@ export class GameService {
   // If the player isn't making decisions for their last hand, then we move onto their next hand (this means they have split)
   moveToNextHandOrPlayer(player: Player): void {
     if (player.currentHandIndex === player.PlayerHands.length - 1) {
+      this.currentPlayerIndex++;
       if (player === this.PlayersWithoutBlackjack[this.PlayersWithoutBlackjack.length - 1]) {
         this.endGame(this.PlayersInPlay);
-        this.updateCurrentPlayer(this.PlayersInPlay[0]);
       } else {
-        this.currentPlayerIndex++;
         this.updateCurrentPlayer(this.PlayersWithoutBlackjack[this.currentPlayerIndex]);
       }
     } else {

@@ -1,11 +1,13 @@
 div.StrategyParent{
-  border: #808080;
+  border: white;
   border-style: groove;
+  color: white;
+  text-align: center;
 }
 
 div.StrategyChild{
-  height: 60px;
-  padding: 20px;
+  height: 30px;
+  padding: 10px;
   text-align: center;
   font-weight: bold;
 }

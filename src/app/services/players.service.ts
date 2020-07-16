@@ -61,7 +61,6 @@ export class PlayersService {
     }
   }
 
-  // Same implementation as hit with doubling the current hand's bet, but if it doesn't bust, then we stand straight away
   double(player: Player): void {
     if (this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] === player) {
       player.PlayerBets[player.currentHandIndex] *= 2;
@@ -69,7 +68,7 @@ export class PlayersService {
     }
   }
 
-  // Adds an extra hand to the player and takes one card from the current hand and puts it in the last hand
+  // Same implementation as hit with doubling the current hand's bet, but if it doesn't bust, then we stand straight away
   split(player: Player): void {
     if (this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] === player) {
       if (this.checkDuplicates(player.PlayerHands[player.currentHandIndex])) {

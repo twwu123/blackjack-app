@@ -1,47 +1,84 @@
-<h2>BLACKJACK</h2>
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-sm">
-      <div md-force-height="100px">
-        <label>Number Of Decks:
-          <input [(ngModel)]="numberOfDecks" placeholder=4 />
-        </label>
-        <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" [disabled]="this.gameService.runningGame" (click)="this.gameService.initialiseDecks(numberOfDecks);
+<div>
+    <div class="row bg-dark">
+      <div class="col-sm">
+        <div style="height: 100px" >
+          <div style="padding-top:30px">
+            <div ngbDropdown class="d-inline-block">
+              <button  class="mr-5" mat-raised-button id="deckDropdown1" ngbDropdownToggle># of Decks: {{this.numberOfDecks}}</button>
+                  <div  ngbDropdownMenu aria-labelledby="deckDropdown1">
+                    <button ngbDropdownItem (click)="this.setDecks(1)">1</button>
+                    <button ngbDropdownItem (click)="this.setDecks(2)">2</button>
+                    <button ngbDropdownItem (click)="this.setDecks(3)">3</button>
+                    <button ngbDropdownItem (click)="this.setDecks(4)">4</button>
+                    <button ngbDropdownItem (click)="this.setDecks(5)">5</button>
+                    <button ngbDropdownItem (click)="this.setDecks(6)">6</button>
+                    <button ngbDropdownItem (click)="this.setDecks(7)">7</button>
+                    <button ngbDropdownItem (click)="this.setDecks(8)">8</button>
+                  </div>
+            </div>
+            <button mat-raised-button class="mr-5" [disabled]="this.gameService.runningGame" (click)="this.gameService.initialiseDecks(numberOfDecks);
                 this.gameService.shuffle(this.gameService.Decks)">Reset deck</button>
-        <span [ngStyle]="{'margin-left.px': 30}"> Number of cards left: </span>{{this.gameService.Decks.length}}
-        <button mat-raised-button [ngStyle]="{'margin-left.px': 30}" onclick="this.blur()" (click)="openDialog()">Open
-          Strategy Guide</button>
+            <button mat-raised-button class="mr-5" onclick="this.blur()" (click)="openDialog()">Open
+            Strategy Guide</button>
+            <div ngbDropdown class="d-inline-block">
+            <button  class="mr-5" [disabled]="this.gameService.runningGame" mat-raised-button id="botDropdown1" ngbDropdownToggle># of Bots: {{this.numberOfBots}}</button>
+                  <div  ngbDropdownMenu aria-labelledby="botDropdown1">
+                    <button ngbDropdownItem (click)="this.setBot(0)">0</button>
+                    <button ngbDropdownItem (click)="this.setBot(1)">1</button>
+                    <button ngbDropdownItem (click)="this.setBot(2)">2</button>
+                    <button ngbDropdownItem (click)="this.setBot(3)">3</button>
+                    <button ngbDropdownItem (click)="this.setBot(4)">4</button>
+                  </div>
+            </div>
+            <mat-slide-toggle [(ngModel)]="strategyOn" style="color:white">Toggle Strategy</mat-slide-toggle>
+        </div>
       </div>
-      <div>
-        Dealer's hand<span *ngIf="!this.gameService.runningGame"> ---- Dealer Score:
-          {{this.gameService.DealerHand.score()}}</span>
+    </div>
+    <div class="col-sm">
+      <app-count></app-count>
+    </div>
+  </div>
+  <div class="row bg-success" style="height: 300px">
+    <div class="col-sm">
+      <app-bot *ngIf="numberOfBots >= 1"></app-bot>
+    </div>
+      <div class="col-sm">
         <div style="height: 180px" class="bg-success show">
           <ul class="sideways">
             <li class="sideways" *ngFor="let card of this.gameService.DealerHand.cards, let i = index">
               <img *ngIf="this.gameService.runningGame && i === 1 && this.gameService.DealerHand.cards.length === 2;
-            else elseBlock" width="140px" height="180px" alt="card" [src]="this.gameService.CardBack.img">
+            else elseBlock" width="70px" height="90px" alt="card" [src]="this.gameService.CardBack.img">
               <ng-template #elseBlock>
-                <img width="140px" height="180px" alt="card" [src]="card.img">
+                <img width="70px" height="90px" alt="card" [src]="card.img">
               </ng-template>
             </li>
           </ul>
         </div>
       </div>
+    <div class="col-sm">
+      <app-bot *ngIf="numberOfBots >=2"></app-bot>
+    </div>
+    </div>
+    <div class="row bg-success" style="height: 300px">
+      <div class="col-sm">
+        <app-bot *ngIf="numberOfBots >=3"></app-bot>
+      </div>
+      <div class="col-sm">
       <div>
         <span>Your Hand</span> ---- Hand Bet: {{this.User.PlayerBets[0]}} ---- Score:
         {{this.User.PlayerHands[0].score()}}
-        <div style="height: 180px" class="bg-success show">
+        <div style="height: 90px" class="bg-success show">
           <div [ngClass]="{'current': currentActivePlayer === this.User &&
           this.User.currentHandIndex === 0}">
             <ul class="sideways">
               <li class="sideways" *ngFor="let card of this.User.PlayerHands[0].cards">
-                <img width="140px" height="180px" alt="card" src='{{card.img}}'>
+                <img width="70px" height="90px" alt="card" src='{{card.img}}'>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <div style="padding-top: 10px" *ngIf="this.User.PlayerHands[1]">
+      <div style="padding-top: 10px" class="show" *ngIf="this.User.PlayerHands[1]">
         <span>Second Hand</span> ---- Hand Bet: {{this.User.PlayerBets[1]}} ---- Score:
         {{this.User.PlayerHands[1].score()}}
         <div class="bg-success">
@@ -49,91 +86,75 @@
             this.User.currentHandIndex === 1}">
             <ul class="sideways">
               <li class="sideways" *ngFor="let card of this.User.PlayerHands[1].cards">
-                <img width="140px" height="180px" alt="card" src='{{card.img}}'>
+                <img width="70px" height="90px" alt="card" src='{{card.img}}'>
               </li>
             </ul>
           </div>
         </div>
       </div>
-      <div style="padding-top: 50px">
-        <div class="row">
-          <div class="col-sm">
-            <div class="row">
+      <div style="padding-top:10px" *ngIf="this.gameService.message">
+        <span style="color: red; font-size: large">{{this.gameService.message}}</span>
+      </div>
+      </div>
+      <div class="col-sm">
+        <app-bot *ngIf="numberOfBots >=4"></app-bot>
+      </div>
+      </div>
+      <div class="row bg-dark" style="height: 100px">
+        <div class="col-sm" style="padding-top: 30px">
+          <div class="row">
+            <div style="padding-left: 30px" class="col-sm">
+              <div>
+                <button  class="mr-1" mat-raised-button [disabled]="(this.gameService.runningGame)"
+                  (click)="this.playersService.addBet(this.User, 50)">+50</button>
+                <button class="mr-1" mat-raised-button [disabled]="(this.gameService.runningGame)"
+                  (click)="this.playersService.minusBet(this.User, 50)">-50</button>
+                <button class="mr-1" mat-raised-button [disabled]="(this.gameService.runningGame)"
+                (click)="this.playersService.resetBet(this.User, 50)">50</button>
+              </div>
+              <div>
+                <span style="color: white; padding-left: 55px">PlayerBet: {{this.User.PlayerOriginalBet}}</span>
+              </div>
+            </div>
+            <div class="col-sm">
+              <div>
+                <button mat-raised-button [ngStyle]="{'margin-left.px': 30}"
+                (click)="this.playersService.setMoney(this.User, money)">Reset Money</button>
+              </div>
+              <div>
+                <span style="color: white; padding-left: 30px">PlayerMoney: {{this.User.PlayerMoney}}</span>
+              </div>
+            </div>
+            <div class="col-sm">
+              <app-strategy [player]="this.User" *ngIf="strategyOn"></app-strategy>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm" style="padding-top: 30px">
+          <div class="row">
               <div class="col-sm">
                 <button mat-raised-button [disabled]="(this.gameService.runningGame)"
                   (click)="this.gameService.dealCards()">Deal Cards</button>
               </div>
               <div class="col-sm">
                 <button mat-raised-button [disabled]="!(this.gameService.runningGame) ||
-                (currentActivePlayer !== this.User)" (click)="this.playersService.stand(this.User)">Stand</button>
+                 (currentActivePlayer !== this.User)" (click)="this.playersService.stand(this.User)">Stand</button>
               </div>
               <div class="col-sm">
                 <button mat-raised-button [disabled]="!(this.gameService.runningGame) ||
-                (currentActivePlayer !== this.User)" (click)="this.playersService.hit(this.User)">Hit</button>
+                 (currentActivePlayer !== this.User)" (click)="this.playersService.hit(this.User)">Hit</button>
               </div>
               <div class="col-sm">
-                <button mat-raised-button [disabled]="!(this.gameService.runningGame) || (this.User.PlayerHands[0].cards.length != 2) ||
-                  (this.User.PlayerHands.length != 1) || currentActivePlayer !== this.User"
-                  (click)="this.playersService.double(this.User)">Double</button>
+                <button mat-raised-button [disabled]="!(this.gameService.runningGame) || ((this.User.PlayerHands[0].cards.length != 2) &&
+              (this.User.PlayerHands.length === 1)) || ((this.User.PlayerHands.length > 1) && (this.User.PlayerHands[this.User.currentHandIndex].cards.length != 1)) || currentActivePlayer !== this.User"
+                      (click)="this.playersService.double(this.User)">Double</button>
               </div>
               <div class="col-sm">
                 <button mat-raised-button [disabled]="(!(this.gameService.runningGame) || (this.User.PlayerHands.length === 2)) ||
-                !this.playersService.checkDuplicates(this.User.PlayerHands[0]) || currentActivePlayer !== this.User"
-                  (click)="this.playersService.split(this.User)">Split</button>
+                 !this.playersService.checkDuplicates(this.User.PlayerHands[0]) || currentActivePlayer !== this.User"
+                      (click)="this.playersService.split(this.User)">Split</button>
               </div>
             </div>
           </div>
-        </div>
       </div>
-      <div style="padding-top: 50px">
-        <div class="row">
-          <div class="col-sm">
-            <span>PlayerBet: </span> {{this.User.PlayerOriginalBet}}
-          </div>
-          <div class="col-sm">
-            <button mat-raised-button [disabled]="(this.gameService.runningGame)"
-              (click)="this.playersService.addBet(this.User, 50)">+50</button>
-          </div>
-          <div class="col-sm">
-            <button mat-raised-button [disabled]="(this.gameService.runningGame)"
-              (click)="this.playersService.minusBet(this.User, 50)">-50</button>
-          </div>
-          <div class="col-sm">
-            <button mat-raised-button [disabled]="(this.gameService.runningGame)"
-              (click)="this.playersService.resetBet(this.User, 50)">50</button>
-          </div>
-        </div>
-      </div>
-      <div style="padding-top: 50px">
-        <div class="row">
-          <div class="col-sm">
-            <span>PlayerMoney: </span> {{this.User.PlayerMoney}}
-          </div>
-          <div class="col-sm">
-            <label>Amount:
-              <input [(ngModel)]="money" placeholder=1000 />
-            </label>
-            <button mat-raised-button [ngStyle]="{'margin-left.px': 30}"
-              (click)="this.playersService.setMoney(this.User, money)">Set Money</button>
-          </div>
-        </div>
-      </div>
-      <app-strategy [player]="this.User"></app-strategy>
-    </div>
-    <div class="col-sm">
-      <div md-force-height="100px">
-        <label>Number of Bots to Add:
-          <input [(ngModel)]="botsToAdd" placeholder=1 />
-        </label>
-        <button mat-raised-button [disabled]="(this.gameService.runningGame)" [ngStyle]="{'margin-left.px': 30}"
-          (click)="addBot(botsToAdd)">Add Bots</button>
-        <div #appendHere>
-        </div>
-      </div>
-    </div>
   </div>
-</div>
-
-<div *ngIf="this.gameService.message">
-  <span>{{this.gameService.message}}</span>
-</div>
