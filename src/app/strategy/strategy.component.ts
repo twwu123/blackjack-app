@@ -41,6 +41,14 @@ export class StrategyComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    if (this.player.PlayerHands) {
+      try {
+        this.BasicStrategySuggestion = this.basicStrategyService.DecideBSAction(this.gameService.DealerHand.cards,
+          this.player.PlayerHands[this.player.currentHandIndex].cards);
+      } catch (err) {
+        this.BasicStrategySuggestion = '';
+      }
+    }
   }
 
   ngOnDestroy(): void {
