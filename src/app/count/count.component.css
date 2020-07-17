@@ -1,0 +1,13 @@
+div.CountParent{
+  border: white;
+  border-style: groove;
+  color: white;
+  text-align: center;
+}
+
+div.CountChild{
+  height: 50px;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+}

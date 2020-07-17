@@ -4,24 +4,23 @@
         <div style="height: 100px" >
           <div style="padding-top:30px">
             <div ngbDropdown class="d-inline-block">
-              <button  class="mr-5" mat-raised-button id="deckDropdown1" ngbDropdownToggle># of Decks: {{this.numberOfDecks}}</button>
+              <button  class="mr-2" mat-raised-button id="deckDropdown1" ngbDropdownToggle># of Decks: {{this.gameService.numberOfDecks}}</button>
                   <div  ngbDropdownMenu aria-labelledby="deckDropdown1">
-                    <button ngbDropdownItem (click)="this.setDecks(1)">1</button>
-                    <button ngbDropdownItem (click)="this.setDecks(2)">2</button>
-                    <button ngbDropdownItem (click)="this.setDecks(3)">3</button>
-                    <button ngbDropdownItem (click)="this.setDecks(4)">4</button>
-                    <button ngbDropdownItem (click)="this.setDecks(5)">5</button>
-                    <button ngbDropdownItem (click)="this.setDecks(6)">6</button>
-                    <button ngbDropdownItem (click)="this.setDecks(7)">7</button>
-                    <button ngbDropdownItem (click)="this.setDecks(8)">8</button>
+                    <button ngbDropdownItem (click)="this.gameService.setNumberOfDecks(1)">1</button>
+                    <button ngbDropdownItem (click)="this.gameService.setNumberOfDecks(2)">2</button>
+                    <button ngbDropdownItem (click)="this.gameService.setNumberOfDecks(3)">3</button>
+                    <button ngbDropdownItem (click)="this.gameService.setNumberOfDecks(4)">4</button>
+                    <button ngbDropdownItem (click)="this.gameService.setNumberOfDecks(5)">5</button>
+                    <button ngbDropdownItem (click)="this.gameService.setNumberOfDecks(6)">6</button>
+                    <button ngbDropdownItem (click)="this.gameService.setNumberOfDecks(7)">7</button>
+                    <button ngbDropdownItem (click)="this.gameService.setNumberOfDecks(8)">8</button>
                   </div>
             </div>
-            <button mat-raised-button class="mr-5" [disabled]="this.gameService.runningGame" (click)="this.gameService.initialiseDecks(numberOfDecks);
-                this.gameService.shuffle(this.gameService.Decks)">Reset deck</button>
-            <button mat-raised-button class="mr-5" onclick="this.blur()" (click)="openDialog()">Open
+            <button mat-raised-button class="mr-2" [disabled]="this.gameService.runningGame || this.gameService.autoReset" (click)="this.gameService.initialiseDecks(this.gameService.numberOfDecks)">Reset deck</button>
+            <button mat-raised-button class="mr-2" onclick="this.blur()" (click)="openDialog()">Open
             Strategy Guide</button>
             <div ngbDropdown class="d-inline-block">
-            <button  class="mr-5" [disabled]="this.gameService.runningGame" mat-raised-button id="botDropdown1" ngbDropdownToggle># of Bots: {{this.numberOfBots}}</button>
+            <button  class="mr-2" [disabled]="this.gameService.runningGame" mat-raised-button id="botDropdown1" ngbDropdownToggle># of Bots: {{this.numberOfBots}}</button>
                   <div  ngbDropdownMenu aria-labelledby="botDropdown1">
                     <button ngbDropdownItem (click)="this.setBot(0)">0</button>
                     <button ngbDropdownItem (click)="this.setBot(1)">1</button>
@@ -30,7 +29,8 @@
                     <button ngbDropdownItem (click)="this.setBot(4)">4</button>
                   </div>
             </div>
-            <mat-slide-toggle [(ngModel)]="strategyOn" style="color:white">Toggle Strategy</mat-slide-toggle>
+            <mat-slide-toggle class="mr-2" [(ngModel)]="strategyOn" style="color:white">Toggle Strategy</mat-slide-toggle>
+            <mat-slide-toggle class="mr-2" [(ngModel)]="this.gameService.autoReset" style="color:white">Auto reset deck</mat-slide-toggle>
         </div>
       </div>
     </div>
@@ -38,12 +38,14 @@
       <app-count></app-count>
     </div>
   </div>
-  <div class="row bg-success" style="height: 300px">
+  <div class="row bg-success" style="height: 300px; padding-top: 30px">
     <div class="col-sm">
       <app-bot *ngIf="numberOfBots >= 1"></app-bot>
     </div>
       <div class="col-sm">
+        <span>Dealer's Hand</span>
         <div style="height: 180px" class="bg-success show">
+          <div style="border-color: purple; border-style: solid">
           <ul class="sideways">
             <li class="sideways" *ngFor="let card of this.gameService.DealerHand.cards, let i = index">
               <img *ngIf="this.gameService.runningGame && i === 1 && this.gameService.DealerHand.cards.length === 2;
@@ -53,6 +55,10 @@
               </ng-template>
             </li>
           </ul>
+          </div>
+          <div style="padding-top:10px" *ngIf="this.gameService.message">
+        <span style="color: red; font-size: large">{{this.gameService.message}}</span>
+      </div>
         </div>
       </div>
     <div class="col-sm">
@@ -91,9 +97,6 @@
             </ul>
           </div>
         </div>
-      </div>
-      <div style="padding-top:10px" *ngIf="this.gameService.message">
-        <span style="color: red; font-size: large">{{this.gameService.message}}</span>
       </div>
       </div>
       <div class="col-sm">

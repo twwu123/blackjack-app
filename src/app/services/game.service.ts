@@ -12,8 +12,10 @@ import {Subject} from 'rxjs';
 export class GameService {
   constructor() { }
   Decks: Card[];
+  numberOfDecks = 8;
   runningGame = false;
   DealerHand: Hand = new Hand();
+  autoReset = true;
   message: string;
   PlayersInPlay: Player[] = []; // Track who is playing
   PlayersWithoutBlackjack: Player[] = []; // Track who doesn't have blackjack, players with blackjack shouldn't make moves
@@ -46,12 +48,17 @@ export class GameService {
     }
   }
 
+  setNumberOfDecks(num: number): void {
+    this.numberOfDecks = num;
+  }
+
   initialiseDecks(numberOfDecks: number): void {
     this.Decks = [];
     this.initDeckObs.next(0);
     for (let i = 0; i < numberOfDecks; i++) {
       this.Decks = this.Decks.concat(DECK);
     }
+    this.shuffle(this.Decks);
   }
 
   addPlayerToPlay(player: Player): void {
@@ -69,6 +76,9 @@ export class GameService {
 
   // Deal cards will start a new game, so we should reset certain variables
   dealCards(): void {
+    if (this.Decks.length <= 20 && this.autoReset) {
+      this.initialiseDecks(this.numberOfDecks);
+    }
     if (this.Decks.length > 20) {
       if (!this.runningGame) {
         this.message = '';
@@ -95,7 +105,7 @@ export class GameService {
         this.message = 'Game already in play';
       }
     } else {
-      this.message = 'Deck has too few cards left to play, please reset the deck';
+        this.message = 'Deck has too few cards left to play, please reset the deck';
     }
   }
 
@@ -127,6 +137,7 @@ export class GameService {
         player.PlayerMoney += this.calculateWinnings(player.PlayerHands[i], player.PlayerBets[i]);
       }
     }
+    this.message = 'Game finished, winnings distributed, please Deal Cards to play again';
   }
 
   // Calculate winnings based on hand vs dealer's hand, can be negative if the hand loses.

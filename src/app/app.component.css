@@ -3,6 +3,11 @@ div.current {
   border-color: blue;
 }
 
+.dealerHand {
+  border-style: solid;
+  border-color: purple;
+}
+
 div.show {
   vertical-align: top;
 }

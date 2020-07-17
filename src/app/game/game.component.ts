@@ -3,19 +3,14 @@ import {
   OnInit,
   ViewChild,
   ViewContainerRef,
-  ComponentFactoryResolver,
-  ComponentRef,
   OnDestroy
 } from '@angular/core';
 import { Hand } from '../../hand';
 import { Player } from '../../player';
 import { PlayersService } from 'src/app/services/players.service';
 import { GameService } from '../services/game.service';
-import { BotComponent } from '../bot/bot.component';
-import { BasicStrategyService } from 'src/app/services/basic-strategy.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { StrategyDialogComponent } from '../strategy-dialog/strategy-dialog.component';
-import { CardCountingStrategyData } from '../models/CardCountingStrategyData';
 
 
 @Component({
@@ -24,7 +19,7 @@ import { CardCountingStrategyData } from '../models/CardCountingStrategyData';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit, OnDestroy {
-  numberOfDecks = 8;
+
   money = 1000;
   bet = 50;
   User: Player = new Player(this.money, this.bet, [new Hand()]); // Initialise User as a new player
@@ -32,8 +27,7 @@ export class GameComponent implements OnInit, OnDestroy {
   strategyOn = true;
   currentActivePlayer: Player;
 
-  constructor(private basicStrategyService: BasicStrategyService, public readonly playersService: PlayersService,
-              public readonly gameService: GameService, private resolver: ComponentFactoryResolver, public dialog: MatDialog) { }
+  constructor(public readonly playersService: PlayersService, public readonly gameService: GameService, public dialog: MatDialog) { }
 
   @ViewChild('appendHere', { static: false, read: ViewContainerRef }) target: ViewContainerRef;
 
@@ -41,17 +35,12 @@ export class GameComponent implements OnInit, OnDestroy {
     this.currentActivePlayer = player;
   });
 
-  setDecks(num: number): void {
-    this.numberOfDecks = num;
-  }
-
   setBot(num: number): void {
     this.numberOfBots = num;
   }
 
   ngOnInit(): void {
-    this.gameService.initialiseDecks(this.numberOfDecks);
-    this.gameService.shuffle(this.gameService.Decks);
+    this.gameService.initialiseDecks(this.gameService.numberOfDecks);
     this.gameService.addPlayerToPlay(this.User);
     this.gameService.updateCurrentPlayer(this.User);
   }

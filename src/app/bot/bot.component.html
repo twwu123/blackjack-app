@@ -1,6 +1,6 @@
 <div>
   <div style="height: 180px" class="bg-success show">
-    <div [ngClass]="{'current': this.gameService.PlayersWithoutBlackjack[this.gameService.currentPlayerIndex] === this.botPlayer}">
+    <div>
       <ul class="sideways">
        <li class="sideways" *ngFor="let card of this.botPlayer.PlayerHands[0].cards">
            <img width="70px" height="90px" alt="card" [src]="card.img">

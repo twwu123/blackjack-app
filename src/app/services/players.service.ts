@@ -15,7 +15,9 @@ export class PlayersService {
   }
 
   addBet(player: Player, amount: number): void {
-    player.PlayerOriginalBet += amount;
+    if (player.PlayerOriginalBet < 1000) {
+      player.PlayerOriginalBet += amount;
+    }
   }
 
   minusBet(player: Player, amount: number): void {
