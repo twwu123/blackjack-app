@@ -16,11 +16,11 @@
                     <button ngbDropdownItem (click)="this.gameService.setNumberOfDecks(8)">8</button>
                   </div>
             </div>
-            <button mat-raised-button class="mr-2" [disabled]="this.gameService.runningGame || this.gameService.autoReset" (click)="this.gameService.initialiseDecks(this.gameService.numberOfDecks)">Reset deck</button>
+            <button mat-raised-button class="mr-2" [disabled]="this.runningGame || this.gameService.autoReset" (click)="this.gameService.initialiseDecks(this.gameService.numberOfDecks)">Reset deck</button>
             <button mat-raised-button class="mr-2" onclick="this.blur()" (click)="openDialog()">Open
             Strategy Guide</button>
             <div ngbDropdown class="d-inline-block">
-            <button  class="mr-2" [disabled]="this.gameService.runningGame" mat-raised-button id="botDropdown1" ngbDropdownToggle># of Bots: {{this.numberOfBots}}</button>
+            <button  class="mr-2" [disabled]="this.runningGame" mat-raised-button id="botDropdown1" ngbDropdownToggle># of Bots: {{this.numberOfBots}}</button>
                   <div  ngbDropdownMenu aria-labelledby="botDropdown1">
                     <button ngbDropdownItem (click)="this.setBot(0)">0</button>
                     <button ngbDropdownItem (click)="this.setBot(1)">1</button>
@@ -48,7 +48,7 @@
           <div style="border-color: purple; border-style: solid">
           <ul class="sideways">
             <li class="sideways" *ngFor="let card of this.gameService.DealerHand.cards, let i = index">
-              <img *ngIf="this.gameService.runningGame && i === 1 && this.gameService.DealerHand.cards.length === 2;
+              <img *ngIf="this.runningGame && i === 1 && this.gameService.DealerHand.cards.length === 2;
             else elseBlock" width="70px" height="90px" alt="card" [src]="this.gameService.CardBack.img">
               <ng-template #elseBlock>
                 <img width="70px" height="90px" alt="card" [src]="card.img">
@@ -58,7 +58,10 @@
           </div>
           <div style="padding-top:10px" *ngIf="this.gameService.message">
         <span style="color: red; font-size: large">{{this.gameService.message}}</span>
-      </div>
+          </div>
+          <div style="padding-top:10px" *ngIf="this.gameService.message2">
+        <span style="color: red; font-size: large">{{this.gameService.message2}}</span>
+          </div>
         </div>
       </div>
     <div class="col-sm">
@@ -108,11 +111,11 @@
           <div class="row">
             <div style="padding-left: 30px" class="col-sm">
               <div>
-                <button  class="mr-1" mat-raised-button [disabled]="(this.gameService.runningGame)"
+                <button  class="mr-1" mat-raised-button [disabled]="(this.runningGame)"
                   (click)="this.playersService.addBet(this.User, 50)">+50</button>
-                <button class="mr-1" mat-raised-button [disabled]="(this.gameService.runningGame)"
+                <button class="mr-1" mat-raised-button [disabled]="(this.runningGame)"
                   (click)="this.playersService.minusBet(this.User, 50)">-50</button>
-                <button class="mr-1" mat-raised-button [disabled]="(this.gameService.runningGame)"
+                <button class="mr-1" mat-raised-button [disabled]="(this.runningGame)"
                 (click)="this.playersService.resetBet(this.User, 50)">50</button>
               </div>
               <div>
@@ -136,24 +139,24 @@
         <div class="col-sm" style="padding-top: 30px">
           <div class="row">
               <div class="col-sm">
-                <button mat-raised-button [disabled]="(this.gameService.runningGame)"
+                <button mat-raised-button [disabled]="(this.runningGame)"
                   (click)="this.gameService.dealCards()">Deal Cards</button>
               </div>
               <div class="col-sm">
-                <button mat-raised-button [disabled]="!(this.gameService.runningGame) ||
+                <button mat-raised-button [disabled]="!(this.runningGame) ||
                  (currentActivePlayer !== this.User)" (click)="this.playersService.stand(this.User)">Stand</button>
               </div>
               <div class="col-sm">
-                <button mat-raised-button [disabled]="!(this.gameService.runningGame) ||
+                <button mat-raised-button [disabled]="!(this.runningGame) ||
                  (currentActivePlayer !== this.User)" (click)="this.playersService.hit(this.User)">Hit</button>
               </div>
               <div class="col-sm">
-                <button mat-raised-button [disabled]="!(this.gameService.runningGame) || ((this.User.PlayerHands[0].cards.length != 2) &&
+                <button mat-raised-button [disabled]="!(this.runningGame) || ((this.User.PlayerHands[0].cards.length != 2) &&
               (this.User.PlayerHands.length === 1)) || ((this.User.PlayerHands.length > 1) && (this.User.PlayerHands[this.User.currentHandIndex].cards.length != 1)) || currentActivePlayer !== this.User"
                       (click)="this.playersService.double(this.User)">Double</button>
               </div>
               <div class="col-sm">
-                <button mat-raised-button [disabled]="(!(this.gameService.runningGame) || (this.User.PlayerHands.length === 2)) ||
+                <button mat-raised-button [disabled]="(!(this.runningGame) || (this.User.PlayerHands.length === 2)) ||
                  !this.playersService.checkDuplicates(this.User.PlayerHands[0]) || currentActivePlayer !== this.User"
                       (click)="this.playersService.split(this.User)">Split</button>
               </div>

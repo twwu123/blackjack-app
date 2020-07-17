@@ -13,10 +13,11 @@ export class GameService {
   constructor() { }
   Decks: Card[];
   numberOfDecks = 8;
-  runningGame = false;
+  // runningGame = false;
   DealerHand: Hand = new Hand();
   autoReset = true;
   message: string;
+  message2: string;
   PlayersInPlay: Player[] = []; // Track who is playing
   PlayersWithoutBlackjack: Player[] = []; // Track who doesn't have blackjack, players with blackjack shouldn't make moves
   currentPlayerIndex = 0; // This will track which player can make moves
@@ -31,12 +32,19 @@ export class GameService {
   public initDeckObs = new Subject<number>();
   public initDeckObs$ = this.initDeckObs.asObservable();
 
+  public runningGame = new Subject<boolean>();
+  public runningGame$ = this.runningGame.asObservable();
+
   public updateLastDealtCard(newCard: Card) {
     this.lastDealtCard.next(newCard);
   }
 
   public updateCurrentPlayer(newPlayer: Player) {
     this.currentPlayer.next(newPlayer);
+  }
+
+  public updateRunningGame(run: boolean) {
+    this.runningGame.next(run);
   }
 
   shuffle(Decks: Card[]): void {
@@ -80,9 +88,9 @@ export class GameService {
       this.initialiseDecks(this.numberOfDecks);
     }
     if (this.Decks.length > 20) {
-      if (!this.runningGame) {
-        this.message = '';
-        this.runningGame = true; // Starts an ended game
+        this.updateMessage('');
+        this.updateMessage2('');
+        this.updateRunningGame(true); // Starts an ended game
         this.currentPlayerIndex = 0; // Reset current player tracker
         this.updateCurrentPlayer(this.PlayersInPlay[this.currentPlayerIndex]);
         this.DealerHand.cards = []; // Reset Dealer Hand
@@ -101,11 +109,8 @@ export class GameService {
             this.endGame(this.PlayersInPlay);
           }
         }
-      } else {
-        this.message = 'Game already in play';
-      }
     } else {
-        this.message = 'Deck has too few cards left to play, please reset the deck';
+        this.updateMessage( 'Deck has too few cards left to play, please reset the deck');
     }
   }
 
@@ -118,7 +123,7 @@ export class GameService {
   }
 
   endGame(players: Player[], dealerHand = this.DealerHand) {
-    this.runningGame = false;
+    this.updateRunningGame(false);
     let dealerDeal = false;
     for (const player of players) {
       for (const hand of player.PlayerHands) {
@@ -137,7 +142,6 @@ export class GameService {
         player.PlayerMoney += this.calculateWinnings(player.PlayerHands[i], player.PlayerBets[i]);
       }
     }
-    this.message = 'Game finished, winnings distributed, please Deal Cards to play again';
   }
 
   // Calculate winnings based on hand vs dealer's hand, can be negative if the hand loses.
@@ -189,5 +193,45 @@ export class GameService {
     } else {
       player.currentHandIndex++;
     }
+  }
+
+  calculateMessage(playerHand: Hand): string {
+    if (playerHand.score() > 21) {
+      return 'BUST';
+    } else {
+      if (this.DealerHand.score() > 21) {
+        if (playerHand.cards.length === 2 && playerHand.score() === 21) {
+          return 'BLACKJACK';
+        } else {
+          return 'DEALER BUST';
+        }
+      } else {
+        if (21 - playerHand.score() < 21 - this.DealerHand.score()) {
+          if (playerHand.cards.length === 2 && playerHand.score() === 21) {
+            return 'BLACKJACK';
+          } else {
+            return 'WIN';
+          }
+        } else {
+          if (playerHand.score() === this.DealerHand.score()) {
+            if (playerHand.cards.length === 2 && playerHand.score() === 21 && this.DealerHand.cards.length > 2) {
+              return 'BLACKJACK';
+            } else {
+              return 'PUSH';
+            }
+          } else {
+            return 'LOSE';
+          }
+        }
+      }
+    }
+  }
+
+  updateMessage(msg: string): void {
+    this.message = msg;
+  }
+
+  updateMessage2(msg: string): void {
+    this.message2 = msg;
   }
 }

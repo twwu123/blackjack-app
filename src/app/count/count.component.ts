@@ -13,6 +13,7 @@ export class CountComponent implements OnInit, OnDestroy {
   CardCountingValue = 0;
   CardCountingStrategy = 'HiLo';
   cardCountingData = new CardCountingStrategyData();
+  runningGame: boolean;
 
   public lastCardSubscription = this.gameService.lastDealtCard$.subscribe(card => {
     this.CardCountingValue += this.cardCountingData.getCardCountingValue(card.value, this.CardCountingStrategy);
@@ -22,9 +23,12 @@ export class CountComponent implements OnInit, OnDestroy {
     this.CardCountingValue = num;
   });
 
+  public runningGameSubscription = this.gameService.runningGame$.subscribe(run => {
+    this.runningGame = run;
+  });
+
   displayedCardCountingValue(count): number {
-    if (this.gameService.runningGame) {
-      console.log(this.gameService.DealerHand.cards[1]);
+    if (this.runningGame) {
       return count - this.cardCountingData.getCardCountingValue(this.gameService.DealerHand.cards[1].value, this.CardCountingStrategy);
     } else {
       return count;
@@ -42,6 +46,7 @@ export class CountComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.lastCardSubscription.unsubscribe();
     this.initDeckSubscription.unsubscribe();
+    this.runningGameSubscription.unsubscribe();
   }
 
 }
