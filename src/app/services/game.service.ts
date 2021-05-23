@@ -195,38 +195,6 @@ export class GameService {
     }
   }
 
-  calculateMessage(playerHand: Hand): string {
-    if (playerHand.score() > 21) {
-      return 'BUST';
-    } else {
-      if (this.DealerHand.score() > 21) {
-        if (playerHand.cards.length === 2 && playerHand.score() === 21) {
-          return 'BLACKJACK';
-        } else {
-          return 'DEALER BUST';
-        }
-      } else {
-        if (21 - playerHand.score() < 21 - this.DealerHand.score()) {
-          if (playerHand.cards.length === 2 && playerHand.score() === 21) {
-            return 'BLACKJACK';
-          } else {
-            return 'WIN';
-          }
-        } else {
-          if (playerHand.score() === this.DealerHand.score()) {
-            if (playerHand.cards.length === 2 && playerHand.score() === 21 && this.DealerHand.cards.length > 2) {
-              return 'BLACKJACK';
-            } else {
-              return 'PUSH';
-            }
-          } else {
-            return 'LOSE';
-          }
-        }
-      }
-    }
-  }
-
   updateMessage(msg: string): void {
     this.message = msg;
   }

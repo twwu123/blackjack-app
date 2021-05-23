@@ -38,12 +38,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
   public runningGameSubscription = this.gameService.runningGame$.subscribe( run => {
     this.runningGame = run;
-    if (!run) {
-      this.gameService.updateMessage('Hand 1: ' + this.gameService.calculateMessage(this.User.PlayerHands[0]));
-      if (this.User.PlayerHands.length === 2) {
-        this.gameService.updateMessage2('Hand 2: ' + this.gameService.calculateMessage(this.User.PlayerHands[1]));
-      }
-    }
   });
 
   setBot(num: number): void {
